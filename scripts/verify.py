@@ -68,6 +68,9 @@ def check_scaffold() -> None:
         "scripts/ppt_anim.py",
         "scripts/memory.py",
         "scripts/privacy.py",
+        "hooks/codex-hooks.json",
+        "hooks/session_start.py",
+        "hooks/session_end.py",
     ):
         if not (PLUGIN / rel).exists():
             _fail(f"missing {rel}")

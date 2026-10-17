@@ -13,7 +13,9 @@ memory, strict privacy:
 - **Memory.** Every teacher-requested modification is recorded automatically
   (repeats just count up), fixed mistakes are recorded automatically, habits
   are remembered on request, and "forget" always leaves a tombstone. New
-  conversations load this memory first and apply it.
+  conversations load this memory first and apply it. A SessionStart hook
+  injects the memory report, and a Stop hook hard-fails the session when a
+  modification request was seen but not recorded.
 - **Privacy.** Credentials, student data, intranet addresses and absolute
   paths are filtered out of memory and courseware.
 

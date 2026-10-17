@@ -39,6 +39,14 @@ global AGENTS.md (secrets, privacy, machine information) always applies.
 - `make verify` must pass: pytest (red lines, memory, privacy, PPT animation
   XML, coverage registry), plugin manifest validation, PPT smoke build.
 - Do not commit, push, or open PRs unless the user asks.
+- **Mandatory memory close-out (cannot be skipped):** after applying any
+  teacher change, record it in the same turn with
+  `python plugins/alevel-physics-animations/scripts/anim.py memory add modification
+  --topic <topic> --request "..." --change "..."`.
+  The Stop hook (`hooks/session_end.py`) blocks the session end when a
+  modification request was detected in the transcript but no record was
+  touched. If the hook is not active, this step remains mandatory before
+  finishing any turn.
 
 ## Layout conventions
 

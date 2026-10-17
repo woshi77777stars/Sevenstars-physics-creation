@@ -40,6 +40,8 @@ and apply what applies to this topic:
 - Every requested modification is recorded automatically as soon as you apply it:
   `python scripts/anim.py memory add modification --topic <topic-id> --request "what the teacher asked" --change "what you changed"`
   Repeats of the same request just increment the count; no duplicate entries.
+  This is not optional: a Stop hook hard-fails the session if a modification
+  request was seen but nothing was recorded.
 - Mistakes: when you discover and fix a physics or workflow mistake, record it automatically. Recurrences increment automatically.
   `python scripts/anim.py memory add error --topic <topic-id> --description "..." --correct "..."`
 - "Forget X": `python scripts/anim.py memory forget --match "X"` — the record is moved to a tombstone, never silently deleted.

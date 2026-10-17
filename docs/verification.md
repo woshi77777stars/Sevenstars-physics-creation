@@ -14,6 +14,8 @@ Run `make verify` for the complete suite, or target one check:
 | Hubble v = H₀d; brightness ∝ 1/d² | `python -m pytest tests/test_redlines.py::test_hubble_brightness_mass_energy_xray -q` |
 | Habit dedupe noop / error recurrence / forget tombstone | `python -m pytest tests/test_memory.py -q` |
 | Secrets rejected and never echoed | `python -m pytest tests/test_privacy.py -q` |
+| Modification auto-record, repeat counting, forget tombstone | `python -m pytest tests/test_memory.py -q -k modification` |
+| SessionStart baseline + Stop gate block/unblock | `python -m pytest tests/test_hooks.py -q` |
 | Every PPT step has a native click animation | `python -m pytest tests/test_ppt.py -q` |
 | Plugin manifest is installable | `python3 scripts/verify.py` (also runs the bundled plugin-creator validator when available) |
 | One scene actually renders | `python plugins/alevel-physics-animations/scripts/anim.py render physical-quantities --scene UnitsAndVectors` |
