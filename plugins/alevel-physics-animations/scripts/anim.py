@@ -278,7 +278,15 @@ def cmd_render_all(args: argparse.Namespace) -> int:
 def cmd_ppt(args: argparse.Namespace) -> int:
     if _reexec_if_missing_module("pptx"):
         return 0
-    from ppt_builder import build_deck
+    try:
+        from ppt_builder import build_deck
+    except ImportError as exc:
+        print(
+            f"python-pptx is not available in the resolved Python ({_runtime.resolve_python()}). "
+            f"Run `anim setup` first. ({exc})",
+            file=sys.stderr,
+        )
+        return 1
 
     assert_topic(args.topic)
     out = build_deck(args.topic, Path(args.out))
@@ -289,7 +297,15 @@ def cmd_ppt(args: argparse.Namespace) -> int:
 def cmd_ppt_all(args: argparse.Namespace) -> int:
     if _reexec_if_missing_module("pptx"):
         return 0
-    from ppt_builder import build_deck, available_topics
+    try:
+        from ppt_builder import available_topics, build_deck
+    except ImportError as exc:
+        print(
+            f"python-pptx is not available in the resolved Python ({_runtime.resolve_python()}). "
+            f"Run `anim setup` first. ({exc})",
+            file=sys.stderr,
+        )
+        return 1
 
     failed = []
     for topic in available_topics():
@@ -304,7 +320,15 @@ def cmd_ppt_all(args: argparse.Namespace) -> int:
 def cmd_template(args: argparse.Namespace) -> int:
     if _reexec_if_missing_module("pptx"):
         return 0
-    from ppt_builder import build_template
+    try:
+        from ppt_builder import build_template
+    except ImportError as exc:
+        print(
+            f"python-pptx is not available in the resolved Python ({_runtime.resolve_python()}). "
+            f"Run `anim setup` first. ({exc})",
+            file=sys.stderr,
+        )
+        return 1
 
     print(build_template(Path(args.out) if args.out else None))
     return 0
@@ -470,7 +494,11 @@ def cmd_verify(args: argparse.Namespace) -> int:
         return rc
 
     # PPT smoke check: build every deck and validate the animation XML.
-    from ppt_builder import available_topics, build_deck, validate_deck
+    try:
+        from ppt_builder import available_topics, build_deck, validate_deck
+    except ImportError as exc:
+        print(f"python-pptx missing for the smoke check. Run `anim setup`. ({exc})", file=sys.stderr)
+        return 1
 
     smoke_dir = Path("work") / "ppt-smoke"
     for topic in available_topics():
