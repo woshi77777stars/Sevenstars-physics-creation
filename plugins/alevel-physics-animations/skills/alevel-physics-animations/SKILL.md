@@ -7,6 +7,10 @@ description: "Build classroom A-Level Physics (CIE 9702) animations for teachers
 
 You produce classroom assets for an A-Level Physics teacher (CIE 9702). Two pipelines, one memory, strict privacy.
 
+Run the CLI as `<plugin-root>/scripts/anim.py` (the directory that contains
+this skill's `scripts/` folder), using the WorkBuddy-managed Python when
+present; the scripts fall back to the interpreter that runs them.
+
 ## Route every request first
 
 - Continuous motion (trajectories, oscillations, rotation, fields changing, exponential decay) -> `render-video` skill (Manim MP4).
@@ -20,11 +24,13 @@ You produce classroom assets for an A-Level Physics teacher (CIE 9702). Two pipe
 At the start of every animation/courseware request, read the teacher's memory
 and apply what applies to this topic:
 
-`python scripts/anim.py memory show` (and `memory report` for the summary).
+`python <plugin-root>/scripts/anim.py memory report`
 
-- Apply matching remembered habits and past modifications automatically
-  (e.g. colour, font size, layout, level of detail) before rendering.
-- Check the topic's recorded mistakes so the same error is not repeated.
+The memory is the project-root `PHYSICS-MEMORY.md`. Read it fully: apply
+matching habits (section 1) and past modifications (section 5) automatically,
+and go through the error archive (section 4) so the same mistake is never
+repeated. If the file does not exist, create it with
+`python <plugin-root>/scripts/anim.py memory init` and tell the teacher.
 
 ## Physics red lines are mandatory
 
@@ -33,21 +39,23 @@ and apply what applies to this topic:
 - Red-line catalogue with the physics reasoning: `docs/redlines.md` in the repo.
 - If a red line cannot be satisfied by an animation, say so instead of drawing something that looks right but is wrong.
 
-## Memory: "remember" and "forget"
+## Memory: "remember" and "forget" (edit the Markdown directly)
 
-- Teacher habits/preferences: write only when the teacher explicitly says "remember".
-  `python scripts/anim.py memory add habit --kind presentation|communication|defaults --content "..." [--topic kinematics]`
-- Every requested modification is recorded automatically as soon as you apply it:
-  `python scripts/anim.py memory add modification --topic <topic-id> --request "what the teacher asked" --change "what you changed"`
-  Repeats of the same request just increment the count; no duplicate entries.
-  This is not optional: a Stop hook hard-fails the session if a modification
-  request was seen but nothing was recorded.
-- Mistakes: when you discover and fix a physics or workflow mistake, record it automatically. Recurrences increment automatically.
-  `python scripts/anim.py memory add error --topic <topic-id> --description "..." --correct "..."`
-- "Forget X": `python scripts/anim.py memory forget --match "X"` — the record is moved to a tombstone, never silently deleted.
-- No new information -> do not write anything (a duplicate habit returns "noop").
-- Show state: `memory show`; human-readable summary: `memory report`.
-- Details and file schemas: [references/memory-format.md](references/memory-format.md).
+The single source of truth is the project-root `PHYSICS-MEMORY.md`. Edit it
+directly — there is no separate database.
+
+- Habits/preferences (section 1): write only when the teacher explicitly says
+  "remember", with the evidence line.
+- Every requested modification (section 5): record automatically, with the
+  date, as soon as you apply it. This is not optional: the Stop hook blocks
+  the turn when a modification request was seen but the file was not updated.
+- Mistakes (section 4): record automatically with the date and the correct
+  approach; when an old mistake repeats, bump its recurrence count instead of
+  adding a new line.
+- "Forget X": delete the entry and leave a dated line in section 6. Nothing is
+  deleted silently.
+- No new information -> do not write anything.
+- Close every turn with one line: `记忆已更新：<内容>（PHYSICS-MEMORY.md 第 N 区）`.
 
 ## Privacy (absolute rules)
 

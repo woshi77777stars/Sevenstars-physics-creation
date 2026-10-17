@@ -7,3 +7,4 @@ outputs/
 dist/
 plugins/alevel-physics-animations/media/
 .DS_Store
+.workbuddy/memory/.memory-gate.json

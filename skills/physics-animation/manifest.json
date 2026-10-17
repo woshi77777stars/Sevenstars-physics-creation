@@ -1,0 +1,14 @@
+{
+  "name": "physics-animation",
+  "version": "1.0.0",
+  "category": "Education / A-Level Physics Animation",
+  "description": "A-Level 物理课堂演示动画工作流：读教学记忆、按画面内容选 Manim 视频或 PPT 原生动画管线、核对物理红线、收工回写记忆；Stop 钩子保证每次修改都写进 PHYSICS-MEMORY.md。",
+  "description_en": "A-Level physics classroom animation workflow: read the teaching memory, route continuous motion to Manim video or sequential text to native PPT animation, verify physics red lines, and write every applied change back to PHYSICS-MEMORY.md (enforced by a Stop hook).",
+  "compat": [
+    "workbuddy",
+    "codebuddy",
+    "claude-code",
+    "codex-cli",
+    "cursor"
+  ]
+}

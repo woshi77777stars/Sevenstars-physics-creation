@@ -1,0 +1,12 @@
+{
+  "name": "alevel-physics-animations",
+  "version": "0.2.0",
+  "description": "A-Level Physics (CIE 9702) classroom animation kit: physics-red-line Manim videos, native-animation PowerPoint decks, and a project memory (PHYSICS-MEMORY.md) guarded by session hooks.",
+  "author": {
+    "name": "A-Level Physics Animations contributors"
+  },
+  "keywords": ["physics", "alevel", "cie-9702", "manim", "powerpoint", "education", "animation", "memory"],
+  "commands": "./commands",
+  "skills": "./skills",
+  "hooks": "./hooks/hooks.json"
+}

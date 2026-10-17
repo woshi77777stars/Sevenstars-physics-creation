@@ -1,45 +1,45 @@
 # Installation
 
-## For the teacher (installed plugin)
+## WorkBuddy: project-installed kit (recommended)
 
-After `codex plugin install alevel-physics-animations`, ask in a new
-conversation for an animation. The skills route the request and run the CLI.
-On first video render the CLI needs Python 3.10+, Manim CE, and ffmpeg:
+Copy the repository into the teacher's project folder and open the folder in
+WorkBuddy. The app picks up the `physics-animation` skill, the `new-topic`
+and `memory-review` commands, the auto-injected `.workbuddy/memory/MEMORY.md`
+index, and the memory hooks declared by `.workbuddy-plugin/plugin.json`.
+Nothing is installed outside the project.
+
+The hooks call `python3` with the `${CODEBUDDY_PLUGIN_ROOT}` placeholder, the
+same pattern WorkBuddy's own built-in plugins use. On Windows change
+`python3` to `python` in `hooks/hooks.json`.
+
+## Codex / other harnesses
+
+The same repository ships a Codex plugin and marketplace:
 
 ```bash
-python -m pip install -r plugins/alevel-physics-animations/requirements.txt
-python plugins/alevel-physics-animations/scripts/anim.py install-check
+codex plugin marketplace add <repo>/.agents/plugins
+codex plugin install alevel-physics-animations
 ```
 
-`imageio-ffmpeg` supplies a static ffmpeg binary, so no system ffmpeg or
-LaTeX installation is required.
+## Python and rendering
 
-Platform note for local video rendering: Manim depends on pycairo, which
-provides wheels for Linux and Windows but not macOS. On Linux/Windows
-`pip install manim` is enough. On macOS install cairo first via Homebrew
-(`brew install cairo pkg-config`) before `pip install manim`; PPT decks,
-memory and tests run everywhere without it.
+- The CLI prefers the WorkBuddy-managed Python
+  (`~/.workbuddy/binaries/python/envs/manim`, then `envs/default`), then the
+  interpreter that launched it. Override with `PHYSICS_ANIM_PYTHON`.
+- Manim needs pycairo: wheels exist for Linux and Windows; on macOS install
+  cairo first (`brew install cairo pkg-config`). PPT decks, memory and tests
+  run everywhere without Manim.
+- `python -m pip install -r requirements.txt` installs the exact pinned
+  dependency set (resolved for Python 3.12 by `uv pip compile`; regenerate
+  with `uv pip compile requirements.in -o requirements.txt`).
 
-For local runs, `make verify` prefers the project virtualenv
-(`work/.venv/bin/python`) when it exists and falls back to `python3`; pass
-`PYTHON=<path>` to override.
-
-## From the repository
+## Local development
 
 ```bash
 python -m pip install -r requirements-dev.txt
 make verify
 ```
 
-`make verify` runs pytest, validates the plugin manifest, and smoke-builds
-all 25 PPT decks. `make render-all` renders all scenes (slow; needs ffmpeg).
-The Linux CI job also renders a scene end-to-end on every push, so video
-rendering is verified even on machines without a local cairo install.
-
-## Offline teacher package
-
-`make dist-local` builds
-`dist/alevel-physics-animations-offline-<version>-<os>-<arch>.zip` containing
-the plugin, all pre-rendered MP4s, all pre-built PPT decks, vendored wheels
-and ffmpeg, plus `install.sh` / `install.ps1` that work without a network.
-Run the installer, open the examples, and the plugin is ready.
+`make verify` prefers `work/.venv/bin/python` when present. `make
+dist-local` builds the offline package for the current platform; CI builds
+all platforms with pre-rendered videos and vendored wheels.

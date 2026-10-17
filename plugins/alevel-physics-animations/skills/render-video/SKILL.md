@@ -13,7 +13,8 @@ Goal: a 1920x1080 / 30 fps MP4 that visibly satisfies the scene's physics red li
 2. Render: `python scripts/anim.py render <topic> [--scene ClassName] [--1080p30] [--out outputs/videos]`.
    Without the flag you get a fast low-resolution preview (480p15); pass
    `--1080p30` for the classroom-quality 1920x1080 @ 30 fps file. `render-all`
-   always renders every scene of every topic at classroom quality.
+   always renders every scene of every topic at classroom quality. **Any
+   delivery must use `--1080p30`; a preview is never a deliverable.**
 3. If the environment lacks Manim or ffmpeg: run `python scripts/anim.py install-check` and install the pinned requirements (`pip install -r requirements.txt`, which includes `imageio-ffmpeg` for a bundled static ffmpeg).
 4. Verify the result exists at `outputs/videos/<topic>/<Scene>.mp4` and scrub it before delivery.
 

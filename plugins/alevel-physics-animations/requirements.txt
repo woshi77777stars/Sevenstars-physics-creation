@@ -1,5 +1,5 @@
-manim
-imageio-ffmpeg
-python-pptx
-pillow
-numpy
+manim==0.22.0
+imageio-ffmpeg==0.6.0
+python-pptx==1.0.2
+pillow==12.3.0
+numpy==2.5.4

@@ -1,16 +1,20 @@
-# Memory store format
+# Memory format: PHYSICS-MEMORY.md
 
-See the plugin reference `plugins/alevel-physics-animations/skills/alevel-physics-animations/references/memory-format.md`
-for the canonical description. Summary:
+One structured Markdown file at the project root, edited directly by the
+model and travelling with the project. Full protocol:
+`skills/physics-animation/references/memory-protocol.md`.
 
-- Location `<home>/.physics-anim/memory/`, override with
-  `PHYSICS_ANIM_MEMORY_DIR` (used by tests).
-- `habits.jsonl` — written only on explicit "remember"; duplicates noop.
-- `errors.jsonl` — automatic on fixed mistakes; same signature increments
-  `recurrences`.
-- `modifications.jsonl` — automatic on every applied teacher modification;
-  the same request increments `recurrences` instead of duplicating.
-- `deleted/*.jsonl` — tombstones from every "forget".
-- `index.md` — generated human-readable report.
-- Privacy filter rejects credentials, PII, intranet addresses and absolute
-  paths; it reports categories only, never values.
+| Section | Content | Write rule |
+|---|---|---|
+| 1 | Classroom presentation habits | Only on explicit "remember", with evidence |
+| 2 | Physics red lines | Read-only unless the teacher corrects physics |
+| 3 | Pipeline rules | Defaults |
+| 4 | Error archive | Automatic, dated; repeat -> recurrence +1 |
+| 5 | Modification records | Automatic, dated, per applied teacher request |
+| 6 | Deleted / superseded entries | "Forget" leaves a dated line here |
+| 7 | Open questions | Ask once, then record the answer |
+
+Enforcement: the WorkBuddy Stop hook scans new user messages each turn; a
+detected modification request with an unchanged file blocks the turn
+(exit 2). Privacy: credentials, student data, intranet addresses and
+absolute paths never enter this file.

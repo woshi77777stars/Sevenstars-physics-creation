@@ -25,10 +25,12 @@ global AGENTS.md (secrets, privacy, machine information) always applies.
 
 ## Memory and privacy
 
-- Habits are written only on an explicit "remember"; mistakes are recorded
-  automatically when fixed; every teacher-requested modification is recorded
-  automatically when applied; "forget" writes a tombstone; no new info -> no
-  write. Memory lives in `<home>/.physics-anim/memory/` and never in git.
+- One memory: `PHYSICS-MEMORY.md` at the project root (sections 1 habits,
+  2 red lines, 3 pipelines, 4 error archive, 5 modifications, 6
+  delete-with-trace, 7 open questions). Habits only on an explicit
+  "remember"; mistakes and applied modifications are written automatically;
+  "forget" moves the entry to section 6; no new info -> no write. This repo
+  ships the empty seed; a teacher's personal entries live in their own copy.
 - Credentials, student data, intranet addresses and absolute paths must never
   appear in memory, courseware, docs or comments. Run
   `python plugins/alevel-physics-animations/scripts/anim.py scrub <dir>`
@@ -40,13 +42,11 @@ global AGENTS.md (secrets, privacy, machine information) always applies.
   XML, coverage registry), plugin manifest validation, PPT smoke build.
 - Do not commit, push, or open PRs unless the user asks.
 - **Mandatory memory close-out (cannot be skipped):** after applying any
-  teacher change, record it in the same turn with
-  `python plugins/alevel-physics-animations/scripts/anim.py memory add modification
-  --topic <topic> --request "..." --change "..."`.
-  The Stop hook (`hooks/session_end.py`) blocks the session end when a
-  modification request was detected in the transcript but no record was
-  touched. If the hook is not active, this step remains mandatory before
-  finishing any turn.
+  teacher change, write it into the right `PHYSICS-MEMORY.md` section in the
+  same turn and report `记忆已更新：<内容>（第 N 区）`. The Stop hook
+  (`hooks/session_end.py`) blocks the turn end when a modification request
+  was detected but the memory file was not updated. Even without the hook,
+  this step is mandatory before finishing any turn.
 
 ## Layout conventions
 

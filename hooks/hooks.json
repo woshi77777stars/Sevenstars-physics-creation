@@ -1,0 +1,29 @@
+{
+  "description": "A-Level Physics Animations memory gates",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\"",
+            "description": "Load the teaching memory and record the gate baseline",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\"",
+            "description": "Block finishing when a teacher modification request was not written to PHYSICS-MEMORY.md",
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}

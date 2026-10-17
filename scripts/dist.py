@@ -15,6 +15,15 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 PLUGIN = REPO / "plugins" / "alevel-physics-animations"
 ANIM = PLUGIN / "scripts" / "anim.py"
+KIT_FILES = (
+    ".workbuddy-plugin/plugin.json",
+    "skills",
+    "commands",
+    "hooks",
+    "PHYSICS-MEMORY.md",
+    "USER.md",
+    ".workbuddy/memory/MEMORY.md",
+)
 
 
 def version() -> str:
@@ -94,9 +103,15 @@ $dir = Split-Path -Parent $MyInvocation.MyCommand.Path
 python -m venv "$dir\\.venv"
 & "$dir\\.venv\\Scripts\\pip.exe" install --no-index --find-links "$dir\\vendor\\wheels" `
   python-pptx pillow numpy imageio-ffmpeg
-& "$dir\\.venv\\Scripts\\pip.exe" install --no-index --find-links "$dir\\vendor\\wheels" manim
-if ($LASTEXITCODE -ne 0) {
-  Write-Host "manim is not bundled for this platform; PPT decks and memory work."
+$manimOk = $true
+try {
+  & "$dir\\.venv\\Scripts\\pip.exe" install --no-index --find-links "$dir\\vendor\\wheels" manim *>&1 | Out-Null
+  if ($LASTEXITCODE -ne 0) { $manimOk = $false }
+} catch {
+  $manimOk = $false
+}
+if (-not $manimOk) {
+  Write-Host "manim is not bundled for this platform; PPT decks and memory work, video rendering needs a system install."
 }
 if (Test-Path "$dir\\vendor\\ffmpeg") {
   Add-Content "$dir\\.venv\\Scripts\\Activate.ps1" "`n`$env:PATH = `"$dir\\vendor\\ffmpeg;$env:PATH`""
@@ -131,6 +146,14 @@ def build(local_only: bool = True) -> Path:
         shutil.rmtree(stage)
     stage.mkdir(parents=True)
     shutil.copytree(PLUGIN, stage / "plugin" / "alevel-physics-animations")
+    for rel in KIT_FILES:
+        src = REPO / rel
+        if src.is_dir():
+            shutil.copytree(src, stage / rel, dirs_exist_ok=True)
+        elif src.exists():
+            dst = stage / rel
+            dst.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(src, dst)
     build_pptx(stage)
     copy_videos(stage)
     vendor_ffmpeg(stage)

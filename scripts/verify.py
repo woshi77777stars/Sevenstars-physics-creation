@@ -64,19 +64,31 @@ def check_scaffold() -> None:
         "skills/build-ppt/SKILL.md",
         "scripts/anim.py",
         "scripts/redlines.py",
+        "scripts/memory_file.py",
+        "scripts/memory_gate.py",
         "scripts/ppt_builder.py",
         "scripts/ppt_anim.py",
-        "scripts/memory.py",
         "scripts/privacy.py",
-        "hooks/codex-hooks.json",
-        "hooks/session_start.py",
-        "hooks/session_end.py",
     ):
         if not (PLUGIN / rel).exists():
             _fail(f"missing {rel}")
     scenes = list((PLUGIN / "scripts" / "scenes").glob("*.py"))
     if len([p for p in scenes if p.stem not in {"__init__", "_common"}]) < 28:
         _fail(f"expected >=28 scene files, found {len(scenes)}")
+    for rel in (
+        ".workbuddy-plugin/plugin.json",
+        "hooks/hooks.json",
+        "hooks/session_start.py",
+        "hooks/session_end.py",
+        "PHYSICS-MEMORY.md",
+        "USER.md",
+        ".workbuddy/memory/MEMORY.md",
+        "commands/new-topic.md",
+        "commands/memory-review.md",
+        "skills/physics-animation/manifest.json",
+    ):
+        if not (REPO / rel).exists():
+            _fail(f"missing repo-level WorkBuddy file {rel}")
 
 
 def main() -> None:

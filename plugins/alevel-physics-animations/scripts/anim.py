@@ -7,11 +7,10 @@ Commands:
   anim ppt TOPIC [--out DIR]
   anim ppt-all [--out DIR]
   anim template [--out FILE]
-  anim memory add habit --kind K --content TEXT [--topic T]...
-  anim memory add error --topic T --description TEXT --correct TEXT
-  anim memory forget (--id ID | --match TEXT)
-  anim memory show [--kind habit|error]
   anim memory report [--out FILE]
+  anim memory init
+  anim memory where
+  anim memory session-check --transcript PATH [--session-id ID]
   anim scrub PATH
   anim install-check
   anim verify [--smoke]
@@ -27,13 +26,14 @@ import subprocess
 import sys
 from pathlib import Path
 
-from memory import MemoryStore
+import _runtime
+import memory_file
 from privacy import scrub_path
 from redlines import TOPICS_BY_ID, assert_topic
 
 
 SCRIPTS_DIR = Path(__file__).resolve().parent
-REPO_ROOT = SCRIPTS_DIR.parents[2]
+REPO_ROOT = _runtime.repo_root()
 
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -63,28 +63,13 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 
     memory = sub.add_parser("memory")
     mem_sub = memory.add_subparsers(dest="memory_command", required=True)
-    add = mem_sub.add_parser("add")
-    add_sub = add.add_subparsers(dest="record_type", required=True)
-    habit = add_sub.add_parser("habit")
-    habit.add_argument("--kind", default="presentation", choices=["presentation", "communication", "defaults"])
-    habit.add_argument("--content", required=True)
-    habit.add_argument("--topic", action="append", default=[])
-    error = add_sub.add_parser("error")
-    error.add_argument("--topic", required=True)
-    error.add_argument("--description", required=True)
-    error.add_argument("--correct", required=True)
-    modification = add_sub.add_parser("modification")
-    modification.add_argument("--topic", required=True)
-    modification.add_argument("--request", required=True)
-    modification.add_argument("--change", required=True)
-    forget = mem_sub.add_parser("forget")
-    forget_group = forget.add_mutually_exclusive_group(required=True)
-    forget_group.add_argument("--id")
-    forget_group.add_argument("--match")
-    show = mem_sub.add_parser("show")
-    show.add_argument("--kind", choices=["habit", "error"])
     report = mem_sub.add_parser("report")
     report.add_argument("--out")
+    mem_sub.add_parser("init")
+    mem_sub.add_parser("where")
+    check = mem_sub.add_parser("session-check")
+    check.add_argument("--transcript", required=True)
+    check.add_argument("--session-id", default="")
 
     scrub = sub.add_parser("scrub", help="Scan text files for private data (categories only).")
     scrub.add_argument("path")
@@ -195,10 +180,11 @@ def cmd_render(args: argparse.Namespace) -> int:
     out_base = Path(args.out)
     out_base.mkdir(parents=True, exist_ok=True)
     quality = ["-r", "1920,1080", "--fps", "30"] if args.__dict__.get("1080p30") else ["-ql"]
+    python_exe = _runtime.python_for_render()
     failed = 0
     for module, cls in pairs:
         cmd = [
-            _python(), "-m", "manim", "render",
+            python_exe, "-m", "manim", "render",
             *quality, "--format", "mp4", "--media_dir", str(out_base),
             str(module), cls.__name__,
         ]
@@ -281,37 +267,27 @@ def cmd_template(args: argparse.Namespace) -> int:
 
 
 def cmd_memory(args: argparse.Namespace) -> int:
-    store = MemoryStore()
-    if args.memory_command == "add":
-        if args.record_type == "habit":
-            result = store.add_habit(args.content, getattr(args, "kind", "presentation"), args.topic)
-        elif args.record_type == "modification":
-            result = store.add_modification(args.topic, args.request, args.change)
-        else:
-            result = store.add_error(args.topic, args.description, args.correct)
-        print(json.dumps({"action": result.action, "id": result.record.get("id")}))
-        return 0
-    if args.memory_command == "forget":
-        if args.match is not None and not args.match.strip():
-            print("forget --match requires a non-empty keyword.", file=sys.stderr)
-            return 2
-        removed = store.forget(match=args.match, record_id=args.id)
-        print(json.dumps({"removed": removed}))
-        return 0
-    if args.memory_command == "show":
-        if args.kind == "habit":
-            records = store.habits()
-        elif args.kind == "error":
-            records = store.errors()
-        else:
-            records = store.habits() + store.errors() + store.modifications()
-        print(json.dumps(records, ensure_ascii=False, indent=2))
-        return 0
     if args.memory_command == "report":
-        target = Path(args.out) if args.out else None
-        path = store.write_report(target)
-        print(path)
+        text = memory_file.read()
+        if not text:
+            print("No PHYSICS-MEMORY.md yet. Run `anim memory init`.", file=sys.stderr)
+            return 1
+        if args.out:
+            Path(args.out).write_text(text, encoding="utf-8")
+            print(args.out)
+        else:
+            print(text)
         return 0
+    if args.memory_command == "init":
+        print(memory_file.ensure_exists())
+        return 0
+    if args.memory_command == "where":
+        print(memory_file.memory_path())
+        return 0
+    if args.memory_command == "session-check":
+        from memory_gate import session_check
+
+        return session_check(args.transcript, args.session_id)
     return 2
 
 
