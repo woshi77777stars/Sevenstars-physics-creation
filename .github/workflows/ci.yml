@@ -1,70 +1,101 @@
-name: verify
+name: verify-and-package
 
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
-  verify-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
-      - name: Install dependencies
-        run: python -m pip install -r requirements-dev.txt
-      - name: Run tests
-        run: python -m pytest tests -q
-      - name: Verify plugin manifest and marketplace
-        run: python scripts/verify.py
-      - name: Smoke-build all PPT decks
-        run: python plugins/alevel-physics-animations/scripts/anim.py ppt-all --out work/ppt-smoke
-      - name: Download vendored wheels for the offline package
-        run: python -m pip download -d work/wheels -r requirements.txt
-      - name: Render all scenes for the offline package
-        run: python plugins/alevel-physics-animations/scripts/anim.py render-all --out outputs/videos
-      - name: Render one scene end-to-end
-        run: python plugins/alevel-physics-animations/scripts/anim.py render physical-quantities --scene UnitsAndVectors --out work/smoke
-      - name: Build offline package
-        run: python scripts/dist.py --local
-      - uses: actions/upload-artifact@v4
-        with:
-          name: offline-package-ubuntu
-          path: dist/*.zip
-          if-no-files-found: warn
-
-  verify-other:
+  build:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-13, macos-14, windows-latest]
+        include:
+          - os: ubuntu-latest
+            arch: linux-x64
+          - os: macos-13
+            arch: darwin-x64
+          - os: macos-14
+            arch: darwin-arm64
+          - os: windows-latest
+            arch: windows-x64
     runs-on: ${{ matrix.os }}
+    env:
+      PYTHON_VERSION: "3.12"
+      TOP_LEVEL_DEPS: "manim==0.22.0 imageio-ffmpeg==0.6.0 python-pptx==1.0.2 pillow==12.3.0 numpy==2.5.4 pytest"
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: ${{ env.PYTHON_VERSION }}
           cache: pip
-      - name: Install dependencies (no Manim: needs system cairo on macOS)
-        run: python -m pip install pytest python-pptx pillow numpy imageio-ffmpeg
+
+      - name: Install Linux system dependencies for Manim
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pkg-config libcairo2-dev
+
+      - name: Install macOS cairo and pkg-config for Manim
+        if: runner.os == 'macOS'
+        run: |
+          brew install cairo pkg-config
+          echo "$(brew --prefix)/bin" >> "$GITHUB_PATH"
+          echo "PKG_CONFIG_PATH=$(brew --prefix)/lib/pkgconfig" >> "$GITHUB_ENV"
+
+      - name: Install pinned top-level dependencies
+        run: python -m pip install ${{ env.TOP_LEVEL_DEPS }}
+
       - name: Run tests
         run: python -m pytest tests -q
+
       - name: Verify plugin manifest and marketplace
         run: python scripts/verify.py
+
       - name: Smoke-build all PPT decks
         run: python plugins/alevel-physics-animations/scripts/anim.py ppt-all --out work/ppt-smoke
-      - name: Download vendored wheels (Manim available on Windows only)
-        if: runner.os == 'Windows'
-        run: python -m pip download -d work/wheels -r requirements.txt
-      - name: Download vendored wheels (macOS, no Manim)
-        if: runner.os == 'macOS'
-        run: python -m pip download -d work/wheels python-pptx pillow numpy imageio-ffmpeg
-      - name: Build offline package
+
+      - name: Download vendored wheels for this platform
+        run: >-
+          python -m pip download -d work/wheels
+          manim==0.22.0
+          imageio-ffmpeg==0.6.0
+          python-pptx==1.0.2
+          pillow==12.3.0
+          numpy==2.5.4
+
+      - name: Render all scenes for the offline package
+        run: python plugins/alevel-physics-animations/scripts/anim.py render-all --out outputs/videos
+
+      - name: Build the platform package
         run: python scripts/dist.py --local
+
       - uses: actions/upload-artifact@v4
         with:
-          name: offline-package-${{ matrix.os }}
+          name: package-${{ matrix.arch }}
           path: dist/*.zip
-          if-no-files-found: warn
+          if-no-files-found: error
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-assets
+
+      - name: Flatten release assets
+        run: |
+          mkdir -p flat
+          find release-assets -name '*.zip' -exec cp {} flat/ \;
+          ls -lh flat
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: flat/*.zip

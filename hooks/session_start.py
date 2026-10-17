@@ -23,8 +23,13 @@ def engine_scripts_dir() -> Path:
     return here / "plugins" / "alevel-physics-animations" / "scripts"
 
 
-sys.path.insert(0, str(engine_scripts_dir()))
+_engine_dir = engine_scripts_dir()
+_plugin_root = os.environ.get("CODEBUDDY_PLUGIN_ROOT") or os.environ.get("WORKBUDDY_PLUGIN_ROOT")
+if _plugin_root:
+    os.environ.setdefault("PHYSICS_ANIM_PROJECT_ROOT", _plugin_root)
+sys.path.insert(0, str(_engine_dir))
 
+import _runtime  # noqa: E402
 import memory_gate  # noqa: E402
 
 
@@ -45,7 +50,13 @@ def main() -> int:
     payload = read_payload()
     session_id = payload.get("session_id") or ""
     memory_gate.init_baseline(session_id)
-    sys.stdout.write(memory_gate.summary())
+    summary = memory_gate.summary()
+    if _runtime.project_venv_python() is None:
+        summary += (
+            "\nFirst run: run `python plugins/alevel-physics-animations/scripts/anim.py setup` "
+            "(network) or `anim setup --offline` from a release package before using PPT/video.\n"
+        )
+    sys.stdout.write(summary)
     return 0
 
 

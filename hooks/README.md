@@ -34,8 +34,9 @@ counts and instructions, never transcript content.
 
 ## Cross-platform notes
 
-- The hook commands use `python3 "…" || python "…"`, which works in both
-  POSIX shells and `cmd.exe`, so no manual edit is needed on Windows.
+- The hook commands try the project venv first, then fall back to
+  `python3`/`python`, so an installed release package does not depend on a
+  system Python being on `PATH`.
 - Entries deliberately omit `matcher` (like WorkBuddy's own sheetagent
   plugin); both events apply to every session.
 - The gate transcripts are read in binary mode with true byte offsets, so

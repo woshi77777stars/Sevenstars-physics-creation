@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\" || python \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\"",
+            "command": "\"${CODEBUDDY_PLUGIN_ROOT}/.physics-anim-venv/bin/python\" \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\" || \"${CODEBUDDY_PLUGIN_ROOT}/.physics-anim-venv/Scripts/python.exe\" \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\" || python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\" || python \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py\"",
             "description": "Load the teaching memory and record the gate baseline",
             "timeout": 15
           }
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\" || python \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\"",
+            "command": "\"${CODEBUDDY_PLUGIN_ROOT}/.physics-anim-venv/bin/python\" \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\" || \"${CODEBUDDY_PLUGIN_ROOT}/.physics-anim-venv/Scripts/python.exe\" \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\" || python3 \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\" || python \"${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py\"",
             "description": "Block finishing when a teacher modification request was not written to PHYSICS-MEMORY.md",
             "timeout": 20
           }

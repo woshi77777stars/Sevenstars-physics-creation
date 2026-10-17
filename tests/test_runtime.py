@@ -20,7 +20,18 @@ def test_resolve_python_prefers_project_venv(monkeypatch, tmp_path):
     venv_python.touch()
     monkeypatch.setenv("PHYSICS_ANIM_PROJECT_ROOT", str(tmp_path))
     monkeypatch.delenv("PHYSICS_ANIM_PYTHON", raising=False)
+    monkeypatch.setattr(_runtime, "_venv_has_pptx", lambda p: True)
     assert Path(_runtime.resolve_python()) == venv_python
+
+
+def test_resolve_python_ignores_half_created_venv(monkeypatch, tmp_path):
+    venv_python = tmp_path / ".physics-anim-venv" / "bin" / "python3"
+    venv_python.parent.mkdir(parents=True)
+    venv_python.touch()
+    monkeypatch.setenv("PHYSICS_ANIM_PROJECT_ROOT", str(tmp_path))
+    monkeypatch.delenv("PHYSICS_ANIM_PYTHON", raising=False)
+    monkeypatch.setattr(_runtime, "_venv_has_pptx", lambda p: False)
+    assert Path(_runtime.resolve_python()) != venv_python
 
 
 def test_setup_base_python_prefers_workbuddy_managed(monkeypatch, tmp_path, tmp_home):

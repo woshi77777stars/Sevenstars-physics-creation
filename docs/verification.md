@@ -20,7 +20,7 @@ Run `make verify` for the complete suite, or target one check:
 | Python resolution: override > project venv > current | `python -m pytest tests/test_runtime.py -q` |
 | WorkBuddy hook/plugin/skill manifests are native format | `python -m pytest tests/test_hooks.py -q -k manifest` |
 | Every PPT step has a native click animation | `python -m pytest tests/test_ppt.py -q` |
-| Plugin manifest is installable | `python3 scripts/verify.py` (also runs the bundled plugin-creator validator when available) |
+| Plugin manifest is installable | `python scripts/verify.py` (also runs the bundled plugin-creator validator when available) |
 | One scene actually renders | `python plugins/alevel-physics-animations/scripts/anim.py render physical-quantities --scene UnitsAndVectors --1080p30` |
 
 `scripts/verify.py` checks the manifest, the repo marketplace entry and the

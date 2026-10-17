@@ -349,6 +349,19 @@ def _reexec_if_missing_module(module: str) -> bool:
     return True  # unreachable
 
 
+def _python_has_module(python: str | Path, module: str) -> bool:
+    """Return True only when `module` imports successfully under `python`."""
+    try:
+        result = subprocess.run(
+            [str(python), "-c", f"import {module}"],
+            capture_output=True,
+            timeout=10,
+        )
+    except Exception:
+        return False
+    return result.returncode == 0
+
+
 def cmd_setup(args: argparse.Namespace) -> int:
     """Create `<project>/.physics-anim-venv` and install pinned deps."""
     base = _runtime.setup_base_python()
@@ -365,6 +378,10 @@ def cmd_setup(args: argparse.Namespace) -> int:
         venv_python = venv_dir / "bin" / "python3"
         if not venv_python.exists():
             venv_python = venv_dir / "Scripts" / "python.exe"
+
+    if _python_has_module(venv_python, "pptx") and _python_has_module(venv_python, "manim"):
+        print(f"Setup already complete: {venv_python}")
+        return 0
 
     # The plugin's own slim requirements (5 top-level pinned packages) are
     # the setup source. The repository root file is the full uv lock

@@ -24,8 +24,29 @@ package alongside.
 
 ### WorkBuddy (project-installed kit — recommended)
 
-Copy this repository into the teacher's project folder and open that folder
-in WorkBuddy. The app discovers:
+**Teachers:** download the matching release package from GitHub Releases,
+unzip it, and run the installer before opening the folder in WorkBuddy:
+
+```bash
+# macOS
+unzip alevel-physics-animations-offline-<version>-darwin-<arch>.zip
+cd alevel-physics-animations-offline-<version>-darwin-<arch>
+bash install.sh
+```
+
+```powershell
+# Windows PowerShell
+Expand-Archive alevel-physics-animations-offline-<version>-windows-x64.zip
+cd alevel-physics-animations-offline-<version>-windows-x64
+.\install.ps1
+```
+
+The package includes the platform wheels, ffmpeg, pre-rendered MP4s and all
+PPT decks, so the teacher does not install Manim, cairo or ffmpeg. The
+installer prefers WorkBuddy-managed Python, then falls back to a Python 3.10+
+interpreter on `PATH`.
+
+The app discovers:
 
 - the `physics-animation` skill (`skills/physics-animation/`);
 - the commands `new-topic` and `memory-review` (`commands/`);
@@ -34,6 +55,15 @@ in WorkBuddy. The app discovers:
   `.workbuddy-plugin/plugin.json`).
 
 Everything lives inside the project; nothing is written outside it.
+
+**Developers:** run from source:
+
+```bash
+python plugins/alevel-physics-animations/scripts/anim.py setup
+```
+
+This creates the project venv. On macOS, Manim additionally needs
+`brew install cairo pkg-config`.
 
 ### Codex / other harnesses
 
@@ -75,11 +105,12 @@ back to `envs/default`); override with `PHYSICS_ANIM_PYTHON`.
 
 ## Verify and release
 
-`make verify` runs 49 tests (physics red lines, memory gate, privacy, PPT
-animation XML, coverage registry), validates both manifests, and smoke-builds
-all 25 decks. CI renders every scene on Linux, builds the offline packages
-(pre-rendered MP4s + vendored wheels + ffmpeg + the full kit) and uploads
-them as artifacts.
+`make verify` runs the physics, memory, privacy and PPT tests, validates both
+manifests, and smoke-builds all decks. CI renders every scene and builds a
+full offline package for Linux, Intel macOS, Apple Silicon macOS and Windows.
+A local build refuses to create an `offline` package when wheels, ffmpeg or
+videos are missing; it can still emit an honest `ppt-only` or `renderer`
+package when those pieces are present.
 
 Before distributing, complete [docs/acceptance-checklist.md](docs/acceptance-checklist.md)
 on at least two real machines (one Windows).

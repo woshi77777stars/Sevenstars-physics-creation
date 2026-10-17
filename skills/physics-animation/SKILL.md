@@ -16,6 +16,12 @@ agent_created: true
 第 4 区（错误档案）必须逐条过一遍，同类错误不允许出现第二次。
 读取优先级：老师当场交代 ＞ 记忆文件 ＞ 你的默认习惯。
 
+读完记忆后，先运行
+`python plugins/alevel-physics-animations/scripts/anim.py install-check`。
+如果 `python-pptx` 或 `manim` 缺失，立即运行
+`python plugins/alevel-physics-animations/scripts/anim.py setup`
+（Release 离线包则用 `anim setup --offline`），安装完成后再继续。
+
 ## 第 1 步：对齐（最多 2 个问题，一轮问完）
 
 记忆里已经写明的不要问。只问：这次课题要演示的现象与要突出的结论。

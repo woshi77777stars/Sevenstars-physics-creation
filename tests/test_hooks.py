@@ -82,7 +82,7 @@ def test_workbuddy_hook_manifest_is_native_format():
     stop_cmd = manifest["hooks"]["Stop"][0]["hooks"][0]["command"]
     assert "${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py" in start_cmd
     assert "${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py" in stop_cmd
-    assert "|| python" in start_cmd and "|| python" in stop_cmd  # Windows fallback
+    assert "|| python" in start_cmd and "|| python" in stop_cmd
 
 
 def test_workbuddy_plugin_manifest_points_at_kit():

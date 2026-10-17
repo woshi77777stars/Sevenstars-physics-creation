@@ -2,15 +2,35 @@
 
 ## WorkBuddy: project-installed kit (recommended)
 
-Copy the repository into the teacher's project folder and open the folder in
-WorkBuddy. The app picks up the `physics-animation` skill, the `new-topic`
-and `memory-review` commands, the auto-injected `.workbuddy/memory/MEMORY.md`
+For teachers, download the matching release package from GitHub Releases,
+unzip it, and run the installer before opening the folder in WorkBuddy:
+
+```bash
+# macOS
+unzip alevel-physics-animations-offline-<version>-darwin-<arch>.zip
+cd alevel-physics-animations-offline-<version>-darwin-<arch>
+bash install.sh
+```
+
+```powershell
+# Windows PowerShell
+Expand-Archive alevel-physics-animations-offline-<version>-windows-x64.zip
+cd alevel-physics-animations-offline-<version>-windows-x64
+.\install.ps1
+```
+
+The release package includes platform wheels, ffmpeg, pre-rendered MP4s and
+PPT decks, so the teacher does not install Manim, cairo or ffmpeg. The
+installer prefers WorkBuddy-managed Python, then falls back to a Python 3.10+
+interpreter on `PATH`.
+The app then picks up the `physics-animation` skill, the `new-topic` and
+`memory-review` commands, the auto-injected `.workbuddy/memory/MEMORY.md`
 index, and the memory hooks declared by `.workbuddy-plugin/plugin.json`.
 Nothing is installed outside the project.
 
-The hooks call `python3` with the `${CODEBUDDY_PLUGIN_ROOT}` placeholder, the
-same pattern WorkBuddy's own built-in plugins use. On Windows change
-`python3` to `python` in `hooks/hooks.json`.
+The hooks try `${CODEBUDDY_PLUGIN_ROOT}/.physics-anim-venv` first and then
+fall back to `python3`/`python`. This covers an installed release package as
+well as a source checkout on macOS, Linux and Windows.
 
 ## Codex / other harnesses
 
@@ -48,7 +68,8 @@ make verify
 ```
 
 `make verify` prefers `work/.venv/bin/python` when present. `make
-dist-local` builds the offline package for the current platform; CI builds
-all platforms with pre-rendered videos and vendored wheels. On macOS the
-offline wheel set contains the PPT pipeline only (Manim needs system cairo);
-on Linux/Windows it includes Manim as well.
+dist-local` builds the current platform package and refuses to create a
+misleading `offline` zip when required wheels, ffmpeg or videos are missing.
+CI produces full offline packages for Linux, Intel macOS, Apple Silicon
+macOS and Windows, then publishes them to a GitHub Release when you push a
+`v*` tag.

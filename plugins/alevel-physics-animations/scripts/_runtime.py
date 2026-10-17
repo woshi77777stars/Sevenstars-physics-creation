@@ -8,6 +8,7 @@ marks the project root), or inside this repository's plugins/ folder.
 from __future__ import annotations
 
 import os
+import subprocess
 import sys
 from pathlib import Path
 
@@ -52,9 +53,22 @@ def project_venv_python() -> Path | None:
         root / ".physics-anim-venv" / "bin" / "python",
         root / ".physics-anim-venv" / "Scripts" / "python.exe",
     ):
-        if candidate.exists():
+        if candidate.exists() and _venv_has_pptx(candidate):
             return candidate
     return None
+
+
+def _venv_has_pptx(python: Path) -> bool:
+    """A half-created venv must not be selected as the engine interpreter."""
+    try:
+        result = subprocess.run(
+            [str(python), "-c", "import pptx"],
+            capture_output=True,
+            timeout=5,
+        )
+    except Exception:
+        return False
+    return result.returncode == 0
 
 
 def resolve_python() -> str:
