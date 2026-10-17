@@ -223,6 +223,23 @@ def test_system_reminder_without_query_is_dropped(memory_env, tmp_path):
     assert memory_gate.session_check(str(path), "rem3") == 0
 
 
+def test_dont_with_concrete_target_triggers(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("dont1")
+    transcript = _transcript_wb(tmp_path, "不要用虚线，改成实线")
+    assert memory_gate.session_check(transcript, "dont1") == 2
+
+
+def test_bare_dont_does_not_trigger(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    for idx, message in enumerate(("先不要修改任何文件", "不要超出界限", "不要动")):
+        memory_gate.init_baseline(f"dont-bare-{idx}")
+        subdir = tmp_path / f"bare-{idx}"
+        subdir.mkdir()
+        transcript = _transcript_wb(subdir, message)
+        assert memory_gate.session_check(transcript, f"dont-bare-{idx}") == 0, message
+
+
 def test_bom_prefixed_transcript_is_parsed(memory_env, tmp_path):
     memory_file.ensure_exists()
     memory_gate.init_baseline("bom1")

@@ -13,8 +13,10 @@ built-in plugins.
   The marker advances after every check, so each turn is gated separately.
 
 Detection is verb/imperative based ("改成/换成/调整/去掉/调大/调小/change…to/
-make the…/instead"); bare nouns like 颜色/字体/标题 do not fire. Output only
-ever contains counts and instructions, never transcript content.
+make the…/instead"). Bare nouns like 颜色/字体/标题 do not fire, and "不要"
+only fires with a concrete target ("不要用虚线", "不要连播"), not generic
+prohibitions like "不要修改文件" or "不要超出目录". Output only ever contains
+counts and instructions, never transcript content.
 
 ## Evidence for the chosen events
 

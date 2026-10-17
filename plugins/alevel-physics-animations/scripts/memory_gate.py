@@ -27,7 +27,8 @@ _REQUEST_PATTERN = re.compile(
         [
             # Chinese: verbs/imperatives, no bare nouns (颜色/字体 alone do not fire).
             r"改成", r"换成", r"改为", r"改一?下", r"调整", r"删掉", r"删除", r"去掉",
-            r"不要", r"加一个", r"加上", r"调大", r"调小", r"大一点", r"小一点",
+            r"不要\s*(?:用|加|放|写|画|做|出现|连播|自动|虚线|实线|颜色|字号|字体|标题|背景|旁白|动画|视频|蓝|红|绿|黑|白|黄|紫|橙|灰|大|小|多|少)",
+            r"加一个", r"加上", r"调大", r"调小", r"大一点", r"小一点",
             r"把.{0,16}(?:改|换)", r"用.{0,12}(?:代替|替代)",
             # English: change/remove with a target, or explicit "instead".
             r"\bchange .{1,40}\b(?:to|with|colou?r|font|size|title|line|dot|arrow|blue|red|green|black|white|bigger|smaller|bold|dashed|solid)\b",
