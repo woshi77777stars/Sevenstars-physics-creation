@@ -15,6 +15,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manim import *
 
+from _common import standard_axes, vertical_tick
 from redlines import G, projectile_positions
 
 

@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manim import *
 
+from _common import standard_axes
 from redlines import free_fall_distance
 
 

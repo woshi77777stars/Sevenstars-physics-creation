@@ -249,6 +249,8 @@ def _copy_render(out_base: Path, module: Path, class_name: str, topic: str) -> N
 def _scene_classes(module: Path) -> list[type]:
     import importlib.util
 
+    if str(module.parent) not in sys.path:
+        sys.path.insert(0, str(module.parent))
     spec = importlib.util.spec_from_file_location(f"anim_scenes_{module.stem}", module)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
