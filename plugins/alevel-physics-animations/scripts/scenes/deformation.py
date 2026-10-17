@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manim import *
 
-from _common import BLUE_LINE, RED_LINE
+from _common import BLUE_LINE, RED_LINE, standard_axes, vertical_tick
 
 
 class HookeAndEnergy(Scene):

@@ -12,7 +12,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from manim import *
 
-from _common import standard_axes
+from _common import BLUE_LINE, standard_axes
 from redlines import G, projectile_positions
 
 
