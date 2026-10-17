@@ -1,0 +1,14 @@
+{
+  "topic": "temperature",
+  "topic_number": 14,
+  "topic_name": "Temperature",
+  "title": "Temperature",
+  "steps": [
+    {"text": "Temperature measures how hot an object is; it does not measure the heat it contains."},
+    {"text": "The zeroth law: two objects in thermal equilibrium with a third are in equilibrium with each other."},
+    {"text": "Temperature is defined by thermal equilibrium — this is what thermometers exploit."},
+    {"text": "Heat is energy transferred because of a temperature difference, always hot to cold."},
+    {"text": "Celsius and kelvin scales have the same step size; 0 K = −273.15 °C."},
+    {"text": "The kelvin is defined from absolute zero and the triple point of water."}
+  ]
+}

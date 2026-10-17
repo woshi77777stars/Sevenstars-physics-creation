@@ -1,0 +1,14 @@
+{
+  "topic": "superposition",
+  "topic_number": 8,
+  "topic_name": "Superposition",
+  "title": "Superposition: Interference and Stationary Waves",
+  "steps": [
+    {"text": "Principle of superposition: resultant displacement = vector sum of the individual displacements."},
+    {"text": "Constructive interference when the path difference is nλ; destructive when it is (n + ½)λ."},
+    {"text": "Coherent sources have a constant phase difference, so stable fringes form."},
+    {"text": "Double slit: equally spaced bright fringes with spacing x = λD/s."},
+    {"text": "Stationary waves form when two identical waves travel in opposite directions."},
+    {"text": "Nodes and antinodes are λ/2 apart; energy is stored, not transferred."}
+  ]
+}

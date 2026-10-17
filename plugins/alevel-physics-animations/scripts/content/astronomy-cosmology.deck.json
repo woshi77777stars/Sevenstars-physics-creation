@@ -1,0 +1,14 @@
+{
+  "topic": "astronomy-cosmology",
+  "topic_number": 25,
+  "topic_name": "Astronomy and cosmology",
+  "title": "Astronomy and Cosmology",
+  "steps": [
+    {"text": "Luminosity is the total power emitted; apparent brightness = L/(4πd²)."},
+    {"text": "Double the distance and the brightness falls to one quarter."},
+    {"text": "Standard candles with known luminosity let us measure distance from brightness."},
+    {"text": "Redshift: receding sources shift lines to longer wavelengths, z = Δλ/λ."},
+    {"text": "Hubble's law: v = H₀d; more distant galaxies recede faster."},
+    {"text": "A straight-line v–d graph implies the universe is expanding uniformly."}
+  ]
+}

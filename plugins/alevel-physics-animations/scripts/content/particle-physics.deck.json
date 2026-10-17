@@ -1,0 +1,14 @@
+{
+  "topic": "particle-physics",
+  "topic_number": 11,
+  "topic_name": "Particle physics",
+  "title": "Particle Physics",
+  "steps": [
+    {"text": "The atom has a small positive nucleus surrounded by electrons; nucleons are protons and neutrons."},
+    {"text": "Quarks build hadrons: proton = uud, neutron = udd; leptons include electrons and neutrinos."},
+    {"text": "β⁻ decay: n → p + e⁻ + antineutrino; β⁺ decay: p → n + e⁺ + neutrino."},
+    {"text": "Every interaction conserves charge, baryon number and lepton number."},
+    {"text": "Strangeness is conserved in strong interactions but not in weak interactions."},
+    {"text": "Antiparticles have opposite charge, baryon and lepton numbers."}
+  ]
+}

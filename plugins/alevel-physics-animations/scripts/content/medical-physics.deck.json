@@ -1,0 +1,14 @@
+{
+  "topic": "medical-physics",
+  "topic_number": 24,
+  "topic_name": "Medical physics",
+  "title": "Medical Physics",
+  "steps": [
+    {"text": "Ultrasound is sound above 20 kHz; its wavelength sets the imaging resolution."},
+    {"text": "Ultrasound reflects strongly at tissue boundaries; echo timing gives distance."},
+    {"text": "f = v/λ: shorter wavelength gives finer detail but shallower penetration."},
+    {"text": "X-rays are absorbed as I = I₀e^(−μx); denser tissue attenuates more."},
+    {"text": "The photoelectric effect dominates X-ray absorption in bone, giving contrast."},
+    {"text": "Half-value thickness is the thickness that halves the beam intensity."}
+  ]
+}

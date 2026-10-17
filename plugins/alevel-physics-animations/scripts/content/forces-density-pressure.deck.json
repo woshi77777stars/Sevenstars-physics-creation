@@ -1,0 +1,14 @@
+{
+  "topic": "forces-density-pressure",
+  "topic_number": 4,
+  "topic_name": "Forces, density and pressure",
+  "title": "Forces, Density and Pressure",
+  "steps": [
+    {"text": "Moment of a force = force × perpendicular distance from the pivot."},
+    {"text": "Equilibrium: resultant force is zero and clockwise moments equal anticlockwise moments."},
+    {"text": "Pressure P = F/A; in a fluid P = ρgh."},
+    {"text": "Density ρ = m/V."},
+    {"text": "Upthrust equals the weight of displaced fluid: ρ_fluid g V_submerged."},
+    {"text": "Floating: upthrust equals the object's weight, so only part of the object is submerged."}
+  ]
+}

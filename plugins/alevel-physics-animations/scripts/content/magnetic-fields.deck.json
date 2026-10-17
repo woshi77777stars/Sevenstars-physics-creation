@@ -1,0 +1,14 @@
+{
+  "topic": "magnetic-fields",
+  "topic_number": 20,
+  "topic_name": "Magnetic fields",
+  "title": "Magnetic Fields",
+  "steps": [
+    {"text": "A current-carrying wire produces circular field lines (right-hand grip rule)."},
+    {"text": "Force on a conductor: F = BIL sinθ, perpendicular to both B and I."},
+    {"text": "Force on a moving charge: F = Bqv sinθ, perpendicular to both B and v."},
+    {"text": "The force is always perpendicular to velocity, so a charge in a uniform field moves in a circle."},
+    {"text": "Fleming's left-hand rule gives the direction of the force."},
+    {"text": "Magnetic flux Φ = BA cosθ; changing flux induces an EMF (Faraday's law)."}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "topic": "deformation",
+  "topic_number": 6,
+  "topic_name": "Deformation of solids",
+  "title": "Deformation of Solids",
+  "steps": [
+    {"text": "Hooke's law: extension is proportional to force, F = kx, but only up to the elastic limit."},
+    {"text": "Beyond the limit of proportionality the graph curves; beyond the elastic limit the material is permanently deformed."},
+    {"text": "Stress = F/A and strain = x/L; Young modulus E = stress/strain."},
+    {"text": "Elastic energy stored = area under the force–extension graph = ½kx²."},
+    {"text": "Work is done stretching a material; it is recovered fully only if the deformation is elastic."},
+    {"text": "The gradient of the force–extension graph is the spring constant k."}
+  ]
+}

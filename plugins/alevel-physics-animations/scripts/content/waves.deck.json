@@ -1,0 +1,14 @@
+{
+  "topic": "waves",
+  "topic_number": 7,
+  "topic_name": "Waves",
+  "title": "Waves",
+  "steps": [
+    {"text": "A progressive wave transfers energy without transferring matter."},
+    {"text": "v = fλ for all waves; speed is set by the medium, not the frequency."},
+    {"text": "Transverse waves vibrate perpendicular to travel (light, water); longitudinal vibrate parallel (sound)."},
+    {"text": "Particles oscillate about fixed positions; only the wave pattern moves."},
+    {"text": "Phase difference = 2π × (path difference / λ); one wavelength = 2π radians."},
+    {"text": "Doppler shift: moving source changes observed frequency, not wave speed."}
+  ]
+}

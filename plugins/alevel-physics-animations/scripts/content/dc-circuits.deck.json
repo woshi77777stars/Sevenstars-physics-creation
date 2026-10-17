@@ -1,0 +1,14 @@
+{
+  "topic": "dc-circuits",
+  "topic_number": 10,
+  "topic_name": "D.C. circuits",
+  "title": "D.C. Circuits",
+  "steps": [
+    {"text": "Kirchhoff's first law: current into a junction equals current out (charge conservation)."},
+    {"text": "Kirchhoff's second law: the EMFs around a loop equal the p.d.s (energy conservation)."},
+    {"text": "Series: same current, resistances add. Parallel: same p.d., reciprocal resistances add."},
+    {"text": "A real cell has internal resistance r: terminal p.d. = EMF − Ir."},
+    {"text": "Potential divider: V_out = V_in × R₂/(R₁ + R₂)."},
+    {"text": "Maximum power is delivered to the load when load resistance equals internal resistance."}
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "name": "alevel-physics-animations",
+  "version": "0.1.0",
+  "description": "Classroom-ready A-Level Physics (CIE 9702) animations: physics-red-line Manim videos, native-animation PowerPoint decks, and a persistent teacher memory with privacy filters. Native WorkBuddy plugin, no external frameworks.",
+  "author": {
+    "name": "Local developer"
+  },
+  "homepage": "https://github.com/your-name/alevel-physics-animations",
+  "repository": "https://github.com/your-name/alevel-physics-animations",
+  "license": "MIT",
+  "keywords": ["physics", "alevel", "cie-9702", "manim", "powerpoint", "education", "animations", "memory"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "A-Level Physics Animations",
+    "shortDescription": "CIE 9702 physics animations: correct-by-construction Manim videos and native-animation PowerPoint decks.",
+    "longDescription": "Classroom-ready A-Level Physics (CIE 9702) plugin for teachers. Two pipelines: continuous motion renders as Manim videos with explicit physics red lines (equal-time spacing, F=ma, energy conservation, centripetal direction, exponential decay, and more), while sequential text reveals become PowerPoint decks with native entrance animations. A persistent local memory records every teacher-requested modification automatically (repeats count up instead of duplicating), fixed mistakes automatically, and habits on request, with forget-with-trace. New conversations load the memory first and apply it. Built-in privacy filters keep credentials, student data, intranet addresses, and absolute paths out of memory and courseware. Pure skills + scripts: no MCP servers or extra frameworks.",
+    "developerName": "Local developer",
+    "category": "Education",
+    "capabilities": ["Interactive", "Read", "Write"],
+    "defaultPrompt": [
+      "Render a projectile-motion video that shows the 1:3:5 vertical spacing red line.",
+      "Build a PowerPoint deck for capacitors where each step appears on click.",
+      "Show my remembered habits and the top recurring physics mistakes."
+    ],
+    "brandColor": "#2563EB",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/logo.png"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "topic": "circular-motion",
+  "topic_number": 12,
+  "topic_name": "Motion in a circle",
+  "title": "Motion in a Circle",
+  "steps": [
+    {"text": "Uniform circular motion has constant speed but changing velocity, so it is accelerating."},
+    {"text": "Angular velocity ω = Δθ/Δt; v = ωr."},
+    {"text": "Centripetal acceleration a = v²/r = rω², always directed toward the centre."},
+    {"text": "Centripetal force F = mv²/r = mrω² is a resultant force, not a new kind of force."},
+    {"text": "At the centre, acceleration is perpendicular to velocity at every instant."},
+    {"text": "Banking and bends: the horizontal component of the normal contact force provides the centripetal force."}
+  ]
+}

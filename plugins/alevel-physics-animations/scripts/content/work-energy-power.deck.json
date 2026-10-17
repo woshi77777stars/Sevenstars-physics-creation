@@ -1,0 +1,14 @@
+{
+  "topic": "work-energy-power",
+  "topic_number": 5,
+  "topic_name": "Work, energy and power",
+  "title": "Work, Energy and Power",
+  "steps": [
+    {"text": "Work done = F s cosθ; the unit is the joule (J)."},
+    {"text": "Kinetic energy = ½mv²; gravitational potential energy = mgh."},
+    {"text": "Mechanical energy is conserved when no dissipative force acts."},
+    {"text": "With friction, work done against friction is lost as thermal energy."},
+    {"text": "Power = work done / time = Fv; the unit is the watt (W)."},
+    {"text": "Efficiency = useful output energy / total input energy."}
+  ]
+}

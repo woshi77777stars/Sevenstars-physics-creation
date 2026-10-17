@@ -1,0 +1,14 @@
+{
+  "topic": "oscillations",
+  "topic_number": 17,
+  "topic_name": "Oscillations",
+  "title": "Oscillations: SHM",
+  "steps": [
+    {"text": "SHM: acceleration is proportional to displacement and directed toward equilibrium, a = −ω²x."},
+    {"text": "x = A cos(ωt) or x = A sin(ωt); the period T = 2π/ω is independent of amplitude."},
+    {"text": "Energy swaps between kinetic and potential; total energy = ½mω²A²."},
+    {"text": "Simple pendulum (small angles): T = 2π√(L/g), independent of mass and amplitude."},
+    {"text": "Mass on a spring: T = 2π√(m/k), independent of amplitude."},
+    {"text": "Damping reduces amplitude; resonance peaks when driving frequency equals natural frequency."}
+  ]
+}

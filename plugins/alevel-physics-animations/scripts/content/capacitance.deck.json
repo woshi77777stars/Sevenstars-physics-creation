@@ -1,0 +1,14 @@
+{
+  "topic": "capacitance",
+  "topic_number": 19,
+  "topic_name": "Capacitance",
+  "title": "Capacitance",
+  "steps": [
+    {"text": "Capacitance C = Q/V; the farad is a coulomb per volt."},
+    {"text": "Energy stored = ½QV = ½CV² = ½Q²/C."},
+    {"text": "Parallel plates: C = ε₀εᵣA/d."},
+    {"text": "Charging and discharging are exponential with time constant τ = RC."},
+    {"text": "During discharge V = V₀e^(−t/RC); after each τ the voltage falls by a factor of e."},
+    {"text": "Capacitors in parallel add; in series they add reciprocally (opposite of resistors)."}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "topic": "nuclear-physics",
+  "topic_number": 23,
+  "topic_name": "Nuclear physics",
+  "title": "Nuclear Physics",
+  "steps": [
+    {"text": "Mass defect: a nucleus weighs less than its separate nucleons; ΔE = Δm c²."},
+    {"text": "Binding energy per nucleon peaks near iron; fusion and fission both move toward the peak."},
+    {"text": "Radioactive decay is random and spontaneous; N = N₀e^(−λt)."},
+    {"text": "Half-life is the time for half the nuclei to decay; it does not depend on the starting amount."},
+    {"text": "Activity A = λN, measured in becquerels."},
+    {"text": "α, β and γ radiation differ in ionising power and penetration."}
+  ]
+}

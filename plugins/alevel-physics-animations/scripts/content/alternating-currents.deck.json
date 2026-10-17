@@ -1,0 +1,14 @@
+{
+  "topic": "alternating-currents",
+  "topic_number": 21,
+  "topic_name": "Alternating currents",
+  "title": "Alternating Currents",
+  "steps": [
+    {"text": "AC voltage varies sinusoidally: V = V₀ sin(ωt)."},
+    {"text": "RMS value: V_rms = V₀/√2, the DC value with the same heating effect."},
+    {"text": "Ideal transformer: V_s/V_p = N_s/N_p, and input power equals output power."},
+    {"text": "A step-up transformer raises voltage and lowers current; step-down does the reverse."},
+    {"text": "Transformers only work with AC because a changing flux is required."},
+    {"text": "Rectification converts AC to DC; smoothing reduces the ripple."}
+  ]
+}

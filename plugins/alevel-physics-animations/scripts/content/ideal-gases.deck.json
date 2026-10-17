@@ -1,0 +1,14 @@
+{
+  "topic": "ideal-gases",
+  "topic_number": 15,
+  "topic_name": "Ideal gases",
+  "title": "Ideal Gases",
+  "steps": [
+    {"text": "Assumptions: point molecules, no intermolecular forces, perfectly elastic collisions."},
+    {"text": "Gas pressure arises from molecules colliding with the walls."},
+    {"text": "pV = nRT and pV = NkT; temperature must be in kelvin."},
+    {"text": "For a fixed amount of gas, pV/T is constant."},
+    {"text": "Kinetic theory: mean kinetic energy ∝ absolute temperature."},
+    {"text": "Heating a fixed volume raises pressure; heating at fixed pressure raises volume."}
+  ]
+}

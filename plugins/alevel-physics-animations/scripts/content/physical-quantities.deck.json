@@ -1,0 +1,14 @@
+{
+  "topic": "physical-quantities",
+  "topic_number": 1,
+  "topic_name": "Physical quantities and units",
+  "title": "Physical Quantities and Units",
+  "steps": [
+    {"text": "All physical quantities are built from seven SI base units: kg, m, s, A, K, mol, cd."},
+    {"text": "Every equation must be dimensionally homogeneous: both sides have the same units."},
+    {"text": "Derived units, e.g. newton = kg m s⁻², follow from defining equations."},
+    {"text": "Scalars (mass, energy, time) have magnitude only; vectors (force, velocity) have magnitude and direction."},
+    {"text": "Vectors add tip-to-tail; perpendicular components add with Pythagoras."},
+    {"text": "Check: s = ut + ½at² gives m = (m/s)·s + (m/s²)·s² = m. ✓"}
+  ]
+}

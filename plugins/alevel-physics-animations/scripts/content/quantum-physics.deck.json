@@ -1,0 +1,14 @@
+{
+  "topic": "quantum-physics",
+  "topic_number": 22,
+  "topic_name": "Quantum physics",
+  "title": "Quantum Physics",
+  "steps": [
+    {"text": "Light arrives as photons, each carrying energy E = hf."},
+    {"text": "Photoelectric effect: one photon can release at most one electron."},
+    {"text": "Electrons are only emitted when f ≥ f₀ (threshold frequency), whatever the intensity."},
+    {"text": "hf = Φ + KE_max: photon energy splits between work function and kinetic energy."},
+    {"text": "Higher intensity means more photons, hence more electrons, but not faster ones."},
+    {"text": "Line spectra come from discrete energy levels: E₂ − E₁ = hf."}
+  ]
+}

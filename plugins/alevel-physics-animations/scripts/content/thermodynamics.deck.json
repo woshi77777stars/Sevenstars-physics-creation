@@ -1,0 +1,14 @@
+{
+  "topic": "thermodynamics",
+  "topic_number": 16,
+  "topic_name": "Thermodynamics",
+  "title": "Thermodynamics",
+  "steps": [
+    {"text": "Internal energy is the sum of the random kinetic and potential energies of molecules."},
+    {"text": "First law: ΔU = q + W (energy supplied by heating plus work done on the system)."},
+    {"text": "Isothermal: constant temperature, pV = constant; internal energy unchanged for an ideal gas."},
+    {"text": "Adiabatic: no heat transfer, so work changes the internal energy; pV^γ = constant."},
+    {"text": "On a p–V diagram the adiabatic curve is steeper than an isothermal through the same point."},
+    {"text": "The area under a p–V graph is the work done."}
+  ]
+}

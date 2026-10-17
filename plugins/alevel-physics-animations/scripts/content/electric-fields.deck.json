@@ -1,0 +1,14 @@
+{
+  "topic": "electric-fields",
+  "topic_number": 18,
+  "topic_name": "Electric fields",
+  "title": "Electric Fields",
+  "steps": [
+    {"text": "Electric field strength E = F/q, force per unit positive charge."},
+    {"text": "Field lines run from positive to negative charge; closer lines mean a stronger field."},
+    {"text": "Uniform field between parallel plates: E = V/d."},
+    {"text": "Point charges: Coulomb's law F = kq₁q₂/r² — an inverse-square law."},
+    {"text": "Electric potential is work per unit charge; it is zero at infinity."},
+    {"text": "A charge accelerates along the field direction if positive, opposite if negative."}
+  ]
+}

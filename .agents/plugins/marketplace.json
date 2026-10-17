@@ -1,0 +1,21 @@
+{
+  "name": "alevel-physics",
+  "interface": {
+    "displayName": "A-Level Physics Animations"
+  },
+  "plugins": [
+    {
+      "name": "alevel-physics-animations",
+      "version": "0.1.0",
+      "source": {
+        "source": "local",
+        "path": "./plugins/alevel-physics-animations"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Education"
+    }
+  ]
+}

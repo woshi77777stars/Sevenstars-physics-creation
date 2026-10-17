@@ -1,0 +1,14 @@
+{
+  "topic": "electricity",
+  "topic_number": 9,
+  "topic_name": "Electricity",
+  "title": "Electricity",
+  "steps": [
+    {"text": "Current I = ΔQ/Δt, measured in amperes; potential difference V = W/Q."},
+    {"text": "Resistance R = V/I; for an ohmic conductor V = IR with a straight I–V line through the origin."},
+    {"text": "A diode conducts in one direction only; a filament lamp curves as its resistance rises with temperature."},
+    {"text": "Resistivity ρ: R = ρL/A."},
+    {"text": "Electrical power P = VI = I²R = V²/R."},
+    {"text": "One kilowatt-hour is a unit of energy, equal to 3.6 MJ."}
+  ]
+}

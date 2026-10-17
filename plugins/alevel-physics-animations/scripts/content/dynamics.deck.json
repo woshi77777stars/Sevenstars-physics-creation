@@ -1,0 +1,14 @@
+{
+  "topic": "dynamics",
+  "topic_number": 3,
+  "topic_name": "Dynamics (Newton's laws and momentum)",
+  "title": "Dynamics: Newton's Laws and Momentum",
+  "steps": [
+    {"text": "Newton 1: a body stays at rest or moves at constant velocity unless a resultant force acts."},
+    {"text": "Newton 2: F = ma — the resultant force equals mass times acceleration."},
+    {"text": "Newton 3: forces come in equal and opposite pairs acting on different bodies."},
+    {"text": "Momentum p = mv is a vector; impulse = FΔt = Δp."},
+    {"text": "In collisions the total momentum is conserved when no external resultant force acts."},
+    {"text": "Conservation is per axis: m₁u₁ + m₂u₂ = m₁v₁ + m₂v₂."}
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "topic": "gravitational-fields",
+  "topic_number": 13,
+  "topic_name": "Gravitational fields",
+  "title": "Gravitational Fields",
+  "steps": [
+    {"text": "Newton's law: F = GMm/r², always attractive."},
+    {"text": "Field strength g = F/m = GM/r² — an inverse-square law."},
+    {"text": "Gravitational potential energy and potential are negative and become less negative with height."},
+    {"text": "Satellite orbits: the centripetal force is provided by gravity."},
+    {"text": "Kepler's third law: T² ∝ r³; a geostationary orbit has T = 24 h and stays above one point."},
+    {"text": "Escape speed is reached when the total energy is zero: v = √(2GM/r)."}
+  ]
+}

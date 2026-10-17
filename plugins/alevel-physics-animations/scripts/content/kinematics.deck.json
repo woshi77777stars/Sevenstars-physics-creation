@@ -1,0 +1,14 @@
+{
+  "topic": "kinematics",
+  "topic_number": 2,
+  "topic_name": "Kinematics (projectiles and free fall)",
+  "title": "Kinematics: Projectiles and Free Fall",
+  "steps": [
+    {"text": "SUVAT equations describe constant-acceleration motion: v = u + at, s = ut + ½at², v² = u² + 2as."},
+    {"text": "Horizontal and vertical motions are independent; only gravity acts on a projectile."},
+    {"text": "Horizontal velocity is constant, so equal-time horizontal gaps are equal."},
+    {"text": "Vertical displacement grows as t², so gaps in equal times follow 1 : 3 : 5 : 7 …"},
+    {"text": "Time of flight depends only on the vertical motion, never on horizontal speed."},
+    {"text": "Free fall from rest: s = ½gt²; after 1 s, 2 s, 3 s the distances are in the ratio 1 : 4 : 9."}
+  ]
+}
