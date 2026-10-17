@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import platform
 import shutil
 import subprocess
@@ -53,8 +54,9 @@ def vendor_ffmpeg(stage: Path) -> None:
         return
     dest = stage / "vendor" / "ffmpeg"
     dest.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(exe, dest / exe.name)
-    print(f"Vendored ffmpeg: {exe.name}")
+    canonical = "ffmpeg.exe" if os.name == "nt" else "ffmpeg"
+    shutil.copy2(exe, dest / canonical)
+    print(f"Vendored ffmpeg: {exe.name} -> {canonical}")
 
 
 def vendor_wheels(stage: Path) -> None:
@@ -121,13 +123,16 @@ Write-Host "Done. Activate with: $dir\\.venv\\Scripts\\Activate.ps1"
 
 
 def write_installers(stage: Path, ver: str, tag: str) -> None:
-    (stage / "install.sh").write_text(INSTALL_SH, encoding="utf-8")
+    install_sh = stage / "install.sh"
+    install_sh.write_text(INSTALL_SH, encoding="utf-8")
+    install_sh.chmod(0o755)
     (stage / "install.ps1").write_text(INSTALL_PS1, encoding="utf-8")
     readme = f"""# Offline package {ver} ({tag})
 
 Everything works without a network connection.
 
-1. Run the installer: `./install.sh` (macOS/Linux) or `install.ps1` (Windows).
+1. Run the installer: `bash install.sh` (macOS/Linux) or `install.ps1`
+   (Windows PowerShell).
 2. Open `examples/videos/` for ready-made MP4s and `examples/pptx/` for
    editable decks with native click animations.
 3. The plugin itself is under `plugin/alevel-physics-animations/`.

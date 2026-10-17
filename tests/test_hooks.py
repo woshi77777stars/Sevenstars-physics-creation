@@ -56,6 +56,7 @@ def test_workbuddy_hook_manifest_is_native_format():
     stop_cmd = manifest["hooks"]["Stop"][0]["hooks"][0]["command"]
     assert "${CODEBUDDY_PLUGIN_ROOT}/hooks/session_start.py" in start_cmd
     assert "${CODEBUDDY_PLUGIN_ROOT}/hooks/session_end.py" in stop_cmd
+    assert "|| python" in start_cmd and "|| python" in stop_cmd  # Windows fallback
 
 
 def test_workbuddy_plugin_manifest_points_at_kit():
@@ -153,3 +154,18 @@ def test_extract_user_text_variants():
     assert memory_gate._extract_user_text(codex) == "把球改蓝"
     assert memory_gate._extract_user_text(assistant) == ""
     assert memory_gate._extract_user_text(tool_result) == ""
+
+
+def test_bom_prefixed_transcript_is_parsed(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("bom1")
+    path = tmp_path / "bom.jsonl"
+    path.write_bytes(
+        b"\xef\xbb\xbf"
+        + json.dumps(
+            {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "把标题改成蓝色"}]},
+            ensure_ascii=False,
+        ).encode("utf-8")
+        + b"\n"
+    )
+    assert memory_gate.session_check(str(path), "bom1") == 2

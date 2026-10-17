@@ -31,6 +31,8 @@ codex plugin install alevel-physics-animations
   package.
 - Afterwards the CLI prefers that project venv, then the interpreter that
   launched it. Override with `PHYSICS_ANIM_PYTHON`.
+- The CLI prefers the WorkBuddy-managed Python as the setup base on macOS,
+  Linux and Windows (`bin/python3` and `python.exe` layouts).
 - Manim needs pycairo: wheels exist for Linux and Windows; on macOS install
   cairo first (`brew install cairo pkg-config`) and re-run `anim setup`.
   PPT decks, memory and tests run everywhere without Manim.
@@ -47,4 +49,6 @@ make verify
 
 `make verify` prefers `work/.venv/bin/python` when present. `make
 dist-local` builds the offline package for the current platform; CI builds
-all platforms with pre-rendered videos and vendored wheels.
+all platforms with pre-rendered videos and vendored wheels. On macOS the
+offline wheel set contains the PPT pipeline only (Manim needs system cairo);
+on Linux/Windows it includes Manim as well.

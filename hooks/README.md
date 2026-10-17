@@ -30,6 +30,14 @@ ever contains counts and instructions, never transcript content.
   enforcement point. It must be confirmed once on a real machine with the
   negative test in `docs/acceptance-checklist.md`.
 
-Windows: replace `python3` with `python` in `hooks.json`. If the app does not
-auto-load plugin hooks, register the same two commands in the project's hook
-configuration.
+## Cross-platform notes
+
+- The hook commands use `python3 "…" || python "…"`, which works in both
+  POSIX shells and `cmd.exe`, so no manual edit is needed on Windows.
+- Entries deliberately omit `matcher` (like WorkBuddy's own sheetagent
+  plugin); both events apply to every session.
+- The gate transcripts are read in binary mode with true byte offsets, so
+  CRLF line endings on Windows and process restarts cannot corrupt the
+  per-turn marker.
+- If the app does not auto-load plugin hooks, register the same two commands
+  in the project's hook configuration.

@@ -98,6 +98,29 @@ def _find_ffmpeg() -> str | None:
         return None
 
 
+def _ffmpeg_alias_dir(exe: str, cache_dir: Path, windows: bool) -> str:
+    """Directory whose PATH entry exposes an executable named `ffmpeg`.
+
+    imageio-ffmpeg bundles a platform-named binary (e.g. ffmpeg-macos-arm64),
+    which `shutil.which("ffmpeg")` cannot find. Copy it once to a cached
+    `ffmpeg`/`ffmpeg.exe` alias and return that directory."""
+    exe_path = Path(exe)
+    if exe_path.stem == "ffmpeg":
+        return str(exe_path.parent)
+    alias = cache_dir / ("ffmpeg.exe" if windows else "ffmpeg")
+    if not alias.exists():
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(exe_path, alias)
+    return str(cache_dir)
+
+
+def _ffmpeg_dir() -> str | None:
+    exe = _find_ffmpeg()
+    if exe is None:
+        return None
+    return _ffmpeg_alias_dir(exe, REPO_ROOT / "work" / ".ffmpeg-bin", os.name == "nt")
+
+
 def _python() -> str:
     return sys.executable
 
@@ -175,11 +198,11 @@ def cmd_render(args: argparse.Namespace) -> int:
         print(f"Scene {args.scene!r} not found; available for {args.topic}: {available}", file=sys.stderr)
         return 1
 
-    ffmpeg = _find_ffmpeg()
-    if ffmpeg is None:
+    ffmpeg_dir = _ffmpeg_dir()
+    if ffmpeg_dir is None:
         print("ffmpeg not found. Install it or `pip install imageio-ffmpeg`.", file=sys.stderr)
         return 1
-    env = {"PATH": str(Path(ffmpeg).parent) + os.pathsep + os.environ.get("PATH", "")}
+    env = {"PATH": ffmpeg_dir + os.pathsep + os.environ.get("PATH", "")}
 
     out_base = Path(args.out)
     out_base.mkdir(parents=True, exist_ok=True)
@@ -319,17 +342,19 @@ def cmd_setup(args: argparse.Namespace) -> int:
         if not venv_python.exists():
             venv_python = venv_dir / "Scripts" / "python.exe"
 
-    reqs = REPO_ROOT / "requirements.txt"
+    # The plugin's own slim requirements (5 top-level pinned packages) are
+    # the setup source. The repository root file is the full uv lock
+    # including manim transitive deps (pycairo, av, moderngl...), which must
+    # never leak into the base install on machines without cairo.
+    reqs = SCRIPTS_DIR.parent / "requirements.txt"
     if not reqs.exists():
-        reqs = SCRIPTS_DIR.parent / "requirements.txt"
+        reqs = REPO_ROOT / "requirements.txt"
     if not reqs.exists():
         print("requirements.txt not found.", file=sys.stderr)
         return 1
 
     print("Installing pinned dependencies (may take several minutes) ...")
-    lines = [ln.strip() for ln in reqs.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
-    base_deps = [ln for ln in lines if not ln.startswith("manim")]
-    manim_deps = [ln for ln in lines if ln.startswith("manim")]
+    base_deps, manim_deps = _setup_groups(reqs)
     wheels_args = []
     if args.offline:
         wheels = REPO_ROOT / "vendor" / "wheels"
@@ -354,6 +379,18 @@ def cmd_setup(args: argparse.Namespace) -> int:
             )
     print(f"Setup complete: {venv_python}")
     return 0
+
+
+def _setup_groups(requirements_path: Path) -> tuple[list[str], list[str]]:
+    """Split the slim requirements into base (no Manim) and manim groups."""
+    lines = [
+        line.strip()
+        for line in requirements_path.read_text(encoding="utf-8").splitlines()
+        if line.strip() and not line.startswith("#")
+    ]
+    base = [line for line in lines if not line.startswith("manim")]
+    manim = [line for line in lines if line.startswith("manim")]
+    return base, manim
 
 
 def cmd_memory(args: argparse.Namespace) -> int:
@@ -392,27 +429,38 @@ def cmd_scrub(args: argparse.Namespace) -> int:
 
 
 def cmd_install_check(args: argparse.Namespace) -> int:
+    resolved = _runtime.resolve_python()
+    version_probe = subprocess.run(
+        [resolved, "-c", "import sys; print(sys.version.split()[0])"],
+        capture_output=True,
+        text=True,
+    )
     checks = {
-        "python": sys.version.split()[0],
+        "resolved_python": resolved,
+        "python": version_probe.stdout.strip() or "MISSING",
         "ffmpeg": _find_ffmpeg() or "MISSING",
+        "manim": _module_version(resolved, "manim"),
+        "python-pptx": _module_version(resolved, "pptx"),
     }
-    try:
-        import manim  # noqa: F401
-
-        checks["manim"] = getattr(manim, "__version__", "installed")
-    except Exception:
-        checks["manim"] = "MISSING"
-    try:
-        import pptx  # noqa: F401
-
-        checks["python-pptx"] = pptx.__version__
-    except Exception:
-        checks["python-pptx"] = "MISSING"
-    checks["resolved_python"] = _runtime.resolve_python()
+    if Path(resolved).resolve() != Path(sys.executable).resolve():
+        checks["launched_with"] = sys.executable
     if checks["python-pptx"] == "MISSING" or checks["manim"] == "MISSING":
         checks["hint"] = "Run `anim setup` (or `anim setup --offline`) to create the project venv."
     print(json.dumps(checks, indent=2))
     return 0 if checks["ffmpeg"] != "MISSING" and checks["manim"] != "MISSING" else 1
+
+
+def _module_version(python_exe: str, module: str) -> str:
+    probe = subprocess.run(
+        [
+            python_exe,
+            "-c",
+            f"import {module}; print(getattr({module}, '__version__', 'installed'))",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    return probe.stdout.strip() if probe.returncode == 0 else "MISSING"
 
 
 def cmd_verify(args: argparse.Namespace) -> int:

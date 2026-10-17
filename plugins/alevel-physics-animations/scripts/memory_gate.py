@@ -117,12 +117,16 @@ def _extract_user_text(event: dict) -> str:
 
 
 def user_messages_after(transcript_path: str, offset: int) -> list[tuple[int, str]]:
-    """(next_offset, text) for user messages starting at byte `offset`."""
+    """(next_offset, text) for user messages starting at byte `offset`.
+
+    Reads in binary mode so offsets are true byte offsets across processes
+    and platforms (Windows CRLF translation can corrupt text-mode cookies),
+    and strips a UTF-8 BOM when resuming from the start."""
     path = Path(transcript_path)
     if not transcript_path or not path.exists():
         return []
     try:
-        with path.open("r", encoding="utf-8", errors="ignore") as fh:
+        with path.open("rb") as fh:
             fh.seek(offset)
             messages: list[tuple[int, str]] = []
             while True:
@@ -131,7 +135,7 @@ def user_messages_after(transcript_path: str, offset: int) -> list[tuple[int, st
                     break
                 end = fh.tell()
                 try:
-                    event = json.loads(line)
+                    event = json.loads(line.decode("utf-8", errors="ignore").lstrip("\ufeff"))
                 except json.JSONDecodeError:
                     continue
                 text = _extract_user_text(event)

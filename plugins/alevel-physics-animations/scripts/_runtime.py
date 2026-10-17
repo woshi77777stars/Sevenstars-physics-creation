@@ -78,9 +78,14 @@ def setup_base_python() -> str:
     if override:
         return override
     home = Path.home()
+    python_root = home / ".workbuddy" / "binaries" / "python"
     for candidate in (
-        home / ".workbuddy" / "binaries" / "python" / "envs" / "default" / "bin" / "python3",
-        home / ".workbuddy" / "binaries" / "python" / "envs" / "manim" / "bin" / "python3",
+        python_root / "envs" / "default" / "bin" / "python3",   # macOS / Linux
+        python_root / "envs" / "default" / "bin" / "python",
+        python_root / "envs" / "default" / "python.exe",        # Windows
+        python_root / "envs" / "manim" / "bin" / "python3",
+        python_root / "envs" / "manim" / "bin" / "python",
+        python_root / "envs" / "manim" / "python.exe",
     ):
         if candidate.exists():
             return str(candidate)
