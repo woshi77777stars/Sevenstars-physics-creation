@@ -43,6 +43,32 @@ def _transcript_wb(tmp_path, *messages):
     return str(path)
 
 
+def _reminder(user_query: str) -> str:
+    return (
+        "<system-reminder data-role=\"user-context\">\n"
+        "请改成/换成/调整/去掉/不要…这是注入的记忆协议文字，不是老师的话。\n"
+        "</system-reminder>\n"
+        f"<user_query>{user_query}</user_query>"
+    )
+
+
+def _transcript_wb_reminder(tmp_path, user_query):
+    path = tmp_path / "session-wb-reminder.jsonl"
+    path.write_text(
+        json.dumps(
+            {
+                "type": "message",
+                "role": "user",
+                "content": [{"type": "input_text", "text": _reminder(user_query)}],
+            },
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return str(path)
+
+
 def _touch_memory():
     path = memory_file.ensure_exists()
     with path.open("a", encoding="utf-8") as fh:
@@ -154,6 +180,47 @@ def test_extract_user_text_variants():
     assert memory_gate._extract_user_text(codex) == "把球改蓝"
     assert memory_gate._extract_user_text(assistant) == ""
     assert memory_gate._extract_user_text(tool_result) == ""
+
+
+def test_system_reminder_extracts_only_the_user_query():
+    reminder = _reminder("画一个平抛")
+    assert memory_gate._content_to_user_text([{"type": "input_text", "text": reminder}]) == "画一个平抛"
+    assert "改成" not in memory_gate._content_to_user_text([{"type": "input_text", "text": reminder}])
+
+
+def test_system_reminder_protocol_words_do_not_trigger(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("rem1")
+    transcript = _transcript_wb_reminder(tmp_path, "画一个平抛")
+    assert memory_gate.session_check(transcript, "rem1") == 0
+
+
+def test_system_reminder_real_modification_request_triggers(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("rem2")
+    transcript = _transcript_wb_reminder(tmp_path, "把标题字号调大")
+    assert memory_gate.session_check(transcript, "rem2") == 2
+
+
+def test_system_reminder_without_query_is_dropped(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("rem3")
+    path = tmp_path / "no-query.jsonl"
+    path.write_text(
+        json.dumps(
+            {
+                "type": "message",
+                "role": "user",
+                "content": [
+                    {"type": "input_text", "text": "<system-reminder>改成/不要/去掉</system-reminder>"}
+                ],
+            },
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    assert memory_gate.session_check(str(path), "rem3") == 0
 
 
 def test_bom_prefixed_transcript_is_parsed(memory_env, tmp_path):

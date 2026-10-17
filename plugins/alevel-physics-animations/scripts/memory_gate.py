@@ -83,22 +83,17 @@ def _extract_user_text(event: dict) -> str:
     WorkBuddy (Claude Code) format:
       {"type": "message", "role": "user",
        "content": [{"type": "text", "text": "..."}, ...]}
+    In WorkBuddy, the user message is normally an injected
+    `<system-reminder>...</system-reminder>` block that ends with the genuine
+    teacher text in `<user_query>...</user_query>`. Only that query is the
+    teacher's words; the reminder contains memory/skill protocol text that
+    must never trigger the gate.
     Codex format:
       {"type": "event_msg",
        "payload": {"type": "user_message", "message": "..."}}
     """
     if event.get("type") == "message" and event.get("role") == "user":
-        content = event.get("content")
-        if isinstance(content, str):
-            return content
-        if isinstance(content, list):
-            parts = [
-                item.get("text", "")
-                for item in content
-                if isinstance(item, dict) and item.get("type") in {"text", "input_text"}
-            ]
-            return " ".join(parts)
-        return ""
+        return _content_to_user_text(event.get("content"))
     payload = event.get("payload")
     if (
         event.get("type") == "event_msg"
@@ -114,6 +109,29 @@ def _extract_user_text(event: dict) -> str:
             )
         return ""
     return ""
+
+
+def _content_to_user_text(content) -> str:
+    if isinstance(content, str):
+        content = [{"type": "input_text", "text": content}]
+    if not isinstance(content, list):
+        return ""
+    parts: list[str] = []
+    for item in content:
+        if not isinstance(item, dict):
+            continue
+        text = item.get("text", "")
+        if item.get("type") not in {"text", "input_text"} or not text:
+            continue
+        stripped = text.lstrip()
+        if stripped.startswith("<system-reminder"):
+            match = re.search(r"<user_query>(.*?)</user_query>", text, re.DOTALL)
+            if match:
+                parts.append(match.group(1).strip())
+            # else: drop the injected reminder entirely
+        else:
+            parts.append(text)
+    return " ".join(part for part in parts if part)
 
 
 def user_messages_after(transcript_path: str, offset: int) -> list[tuple[int, str]]:
