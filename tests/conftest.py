@@ -10,6 +10,11 @@ sys.path.insert(0, str(SCRIPTS))
 
 
 @pytest.fixture()
+def tmp_home(tmp_path):
+    return tmp_path / "home"
+
+
+@pytest.fixture()
 def memory_env(tmp_path):
     """Redirect the project memory file and the gate marker into tmp_path."""
     import os

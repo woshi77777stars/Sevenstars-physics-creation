@@ -11,6 +11,7 @@ Commands:
   anim memory init
   anim memory where
   anim memory session-check --transcript PATH [--session-id ID]
+  anim setup [--offline]
   anim scrub PATH
   anim install-check
   anim verify [--smoke]
@@ -70,6 +71,9 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     check = mem_sub.add_parser("session-check")
     check.add_argument("--transcript", required=True)
     check.add_argument("--session-id", default="")
+
+    setup = sub.add_parser("setup", help="Create the project venv and install pinned dependencies.")
+    setup.add_argument("--offline", action="store_true", help="Install from vendored wheels only.")
 
     scrub = sub.add_parser("scrub", help="Scan text files for private data (categories only).")
     scrub.add_argument("path")
@@ -181,6 +185,17 @@ def cmd_render(args: argparse.Namespace) -> int:
     out_base.mkdir(parents=True, exist_ok=True)
     quality = ["-r", "1920,1080", "--fps", "30"] if args.__dict__.get("1080p30") else ["-ql"]
     python_exe = _runtime.python_for_render()
+    probe = subprocess.run(
+        [python_exe, "-c", "import manim"],
+        capture_output=True,
+    )
+    if probe.returncode != 0:
+        print(
+            f"Manim is not available in the selected Python ({python_exe}). "
+            "Run `anim setup` (needs network, or `anim setup --offline` with vendored wheels).",
+            file=sys.stderr,
+        )
+        return 1
     failed = 0
     for module, cls in pairs:
         cmd = [
@@ -238,6 +253,8 @@ def cmd_render_all(args: argparse.Namespace) -> int:
 
 
 def cmd_ppt(args: argparse.Namespace) -> int:
+    if _reexec_if_missing_module("pptx"):
+        return 0
     from ppt_builder import build_deck
 
     assert_topic(args.topic)
@@ -247,6 +264,8 @@ def cmd_ppt(args: argparse.Namespace) -> int:
 
 
 def cmd_ppt_all(args: argparse.Namespace) -> int:
+    if _reexec_if_missing_module("pptx"):
+        return 0
     from ppt_builder import build_deck, available_topics
 
     failed = []
@@ -260,9 +279,80 @@ def cmd_ppt_all(args: argparse.Namespace) -> int:
 
 
 def cmd_template(args: argparse.Namespace) -> int:
+    if _reexec_if_missing_module("pptx"):
+        return 0
     from ppt_builder import build_template
 
     print(build_template(Path(args.out) if args.out else None))
+    return 0
+
+
+def _reexec_if_missing_module(module: str) -> bool:
+    """Run this CLI again with a capable interpreter when the current one
+    lacks `module`. Returns True only when the process was replaced."""
+    try:
+        __import__(module)
+        return False
+    except ImportError:
+        pass
+    target = _runtime.resolve_python()
+    if Path(target).resolve() == Path(sys.executable).resolve():
+        return False
+    os.execv(target, [target, *sys.argv])
+    return True  # unreachable
+
+
+def cmd_setup(args: argparse.Namespace) -> int:
+    """Create `<project>/.physics-anim-venv` and install pinned deps."""
+    base = _runtime.setup_base_python()
+    venv_dir = _runtime.project_root() / ".physics-anim-venv"
+    venv_python = venv_dir / "bin" / "python3"
+    if not venv_python.exists():
+        venv_python = venv_dir / "Scripts" / "python.exe"
+    if not venv_python.exists():
+        print(f"Creating {venv_dir} with {base} ...")
+        rc = subprocess.call([base, "-m", "venv", str(venv_dir)])
+        if rc:
+            print("venv creation failed.", file=sys.stderr)
+            return rc
+        venv_python = venv_dir / "bin" / "python3"
+        if not venv_python.exists():
+            venv_python = venv_dir / "Scripts" / "python.exe"
+
+    reqs = REPO_ROOT / "requirements.txt"
+    if not reqs.exists():
+        reqs = SCRIPTS_DIR.parent / "requirements.txt"
+    if not reqs.exists():
+        print("requirements.txt not found.", file=sys.stderr)
+        return 1
+
+    print("Installing pinned dependencies (may take several minutes) ...")
+    lines = [ln.strip() for ln in reqs.read_text(encoding="utf-8").splitlines() if ln.strip() and not ln.startswith("#")]
+    base_deps = [ln for ln in lines if not ln.startswith("manim")]
+    manim_deps = [ln for ln in lines if ln.startswith("manim")]
+    wheels_args = []
+    if args.offline:
+        wheels = REPO_ROOT / "vendor" / "wheels"
+        if not wheels.exists():
+            wheels = REPO_ROOT / "work" / "wheels"
+        if not wheels.exists():
+            print("No vendored wheels found for offline install.", file=sys.stderr)
+            return 1
+        wheels_args = ["--no-index", "--find-links", str(wheels)]
+    rc = subprocess.call([str(venv_python), "-m", "pip", "install", *wheels_args, *base_deps])
+    if rc:
+        print("Base dependency install failed; see pip output above.", file=sys.stderr)
+        return rc
+    if manim_deps:
+        manim_rc = subprocess.call([str(venv_python), "-m", "pip", "install", *wheels_args, *manim_deps])
+        if manim_rc:
+            print(
+                "PPT, memory and privacy tools are ready. Manim could not be installed "
+                "(on macOS it needs a system cairo: brew install cairo pkg-config). "
+                "Re-run `anim setup` after installing cairo to enable video rendering.",
+                file=sys.stderr,
+            )
+    print(f"Setup complete: {venv_python}")
     return 0
 
 
@@ -318,6 +408,9 @@ def cmd_install_check(args: argparse.Namespace) -> int:
         checks["python-pptx"] = pptx.__version__
     except Exception:
         checks["python-pptx"] = "MISSING"
+    checks["resolved_python"] = _runtime.resolve_python()
+    if checks["python-pptx"] == "MISSING" or checks["manim"] == "MISSING":
+        checks["hint"] = "Run `anim setup` (or `anim setup --offline`) to create the project venv."
     print(json.dumps(checks, indent=2))
     return 0 if checks["ffmpeg"] != "MISSING" and checks["manim"] != "MISSING" else 1
 
@@ -360,6 +453,7 @@ def main(argv: list[str] | None = None) -> int:
         "ppt-all": cmd_ppt_all,
         "template": cmd_template,
         "memory": cmd_memory,
+        "setup": cmd_setup,
         "scrub": cmd_scrub,
         "install-check": cmd_install_check,
         "verify": cmd_verify,

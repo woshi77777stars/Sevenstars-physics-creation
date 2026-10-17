@@ -23,12 +23,17 @@ codex plugin install alevel-physics-animations
 
 ## Python and rendering
 
-- The CLI prefers the WorkBuddy-managed Python
-  (`~/.workbuddy/binaries/python/envs/manim`, then `envs/default`), then the
-  interpreter that launched it. Override with `PHYSICS_ANIM_PYTHON`.
+- First run: `python plugins/alevel-physics-animations/scripts/anim.py setup`.
+  It creates the project-local `.physics-anim-venv` (base interpreter is the
+  WorkBuddy-managed Python when present), installs the pinned dependencies,
+  and tolerates a missing Manim on macOS (cairo needed there). Offline:
+  `anim setup --offline` installs from the vendored wheels in the offline
+  package.
+- Afterwards the CLI prefers that project venv, then the interpreter that
+  launched it. Override with `PHYSICS_ANIM_PYTHON`.
 - Manim needs pycairo: wheels exist for Linux and Windows; on macOS install
-  cairo first (`brew install cairo pkg-config`). PPT decks, memory and tests
-  run everywhere without Manim.
+  cairo first (`brew install cairo pkg-config`) and re-run `anim setup`.
+  PPT decks, memory and tests run everywhere without Manim.
 - `python -m pip install -r requirements.txt` installs the exact pinned
   dependency set (resolved for Python 3.12 by `uv pip compile`; regenerate
   with `uv pip compile requirements.in -o requirements.txt`).

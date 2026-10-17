@@ -77,6 +77,45 @@ def init_baseline(session_id: str = "") -> dict:
     return marker
 
 
+def _extract_user_text(event: dict) -> str:
+    """User text from either transcript dialect.
+
+    WorkBuddy (Claude Code) format:
+      {"type": "message", "role": "user",
+       "content": [{"type": "text", "text": "..."}, ...]}
+    Codex format:
+      {"type": "event_msg",
+       "payload": {"type": "user_message", "message": "..."}}
+    """
+    if event.get("type") == "message" and event.get("role") == "user":
+        content = event.get("content")
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            parts = [
+                item.get("text", "")
+                for item in content
+                if isinstance(item, dict) and item.get("type") in {"text", "input_text"}
+            ]
+            return " ".join(parts)
+        return ""
+    payload = event.get("payload")
+    if (
+        event.get("type") == "event_msg"
+        and isinstance(payload, dict)
+        and payload.get("type") == "user_message"
+    ):
+        message = payload.get("message") or ""
+        if isinstance(message, str):
+            return message
+        if isinstance(message, list):
+            return " ".join(
+                item.get("text", "") for item in message if isinstance(item, dict)
+            )
+        return ""
+    return ""
+
+
 def user_messages_after(transcript_path: str, offset: int) -> list[tuple[int, str]]:
     """(next_offset, text) for user messages starting at byte `offset`."""
     path = Path(transcript_path)
@@ -95,13 +134,9 @@ def user_messages_after(transcript_path: str, offset: int) -> list[tuple[int, st
                     event = json.loads(line)
                 except json.JSONDecodeError:
                     continue
-                payload = event.get("payload") or {}
-                if (
-                    event.get("type") == "event_msg"
-                    and isinstance(payload, dict)
-                    and payload.get("type") == "user_message"
-                ):
-                    messages.append((end, payload.get("message") or ""))
+                text = _extract_user_text(event)
+                if text:
+                    messages.append((end, text))
             return messages
     except OSError:
         return []

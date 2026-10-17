@@ -41,7 +41,8 @@ agent_created: true
 
 ## 第 5 步：实现
 
-先跑 `python plugins/alevel-physics-animations/scripts/anim.py install-check`。
+先跑 `python plugins/alevel-physics-animations/scripts/anim.py setup`（首次，联网或离线包），
+再用 `install-check` 确认环境。
 
 - 视频：`python plugins/alevel-physics-animations/scripts/anim.py render <topic> [--scene NAME] [--1080p30]`。
   **交付必须带 `--1080p30`**（不带是 480p15 快速预览）；不加旁白；渲染完自己看一遍成片。

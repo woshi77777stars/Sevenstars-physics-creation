@@ -51,6 +51,7 @@ codex plugin install alevel-physics-animations
 Say "做一个平抛演示动画" or run the CLI directly:
 
 ```bash
+python plugins/alevel-physics-animations/scripts/anim.py setup   # once: project venv + pinned deps
 python plugins/alevel-physics-animations/scripts/anim.py topics
 python plugins/alevel-physics-animations/scripts/anim.py render kinematics --1080p30
 python plugins/alevel-physics-animations/scripts/anim.py ppt capacitance

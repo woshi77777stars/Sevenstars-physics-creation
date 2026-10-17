@@ -24,6 +24,25 @@ def _transcript(tmp_path, *messages):
     return str(path)
 
 
+def _transcript_wb(tmp_path, *messages):
+    """WorkBuddy (Claude Code) transcript format."""
+    path = tmp_path / "session-wb.jsonl"
+    with path.open("w", encoding="utf-8") as fh:
+        for msg in messages:
+            fh.write(
+                json.dumps(
+                    {
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "text", "text": msg}],
+                    },
+                    ensure_ascii=False,
+                )
+                + "\n"
+            )
+    return str(path)
+
+
 def _touch_memory():
     path = memory_file.ensure_exists()
     with path.open("a", encoding="utf-8") as fh:
@@ -103,3 +122,34 @@ def test_no_request_advances_marker(memory_env, tmp_path):
     assert memory_gate.session_check(transcript, "s5") == 0
     marker = memory_gate.load_marker()
     assert marker["transcript_offset"] > 0
+
+
+def test_workbuddy_transcript_format_is_parsed(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("wb1")
+    transcript = _transcript_wb(tmp_path, "画一个平抛", "把标题字号调大")
+    # Both messages are present at the first check, so it blocks immediately.
+    assert memory_gate.session_check(transcript, "wb1") == 2
+
+
+def test_workbuddy_format_passes_after_write(memory_env, tmp_path):
+    memory_file.ensure_exists()
+    memory_gate.init_baseline("wb2")
+    transcript = _transcript_wb(tmp_path, "change the colour to blue")
+    _touch_memory()
+    assert memory_gate.session_check(transcript, "wb2") == 0
+
+
+def test_extract_user_text_variants():
+    wb = {"type": "message", "role": "user", "content": [{"type": "text", "text": "把球改蓝"}]}
+    wb_input = {"type": "message", "role": "user", "content": [{"type": "input_text", "text": "把球改蓝"}]}
+    wb_str = {"type": "message", "role": "user", "content": "把球改蓝"}
+    codex = {"type": "event_msg", "payload": {"type": "user_message", "message": "把球改蓝"}}
+    assistant = {"type": "message", "role": "assistant", "content": [{"type": "text", "text": "好的"}]}
+    tool_result = {"type": "message", "role": "user", "content": [{"type": "tool_result", "content": "x"}]}
+    assert memory_gate._extract_user_text(wb) == "把球改蓝"
+    assert memory_gate._extract_user_text(wb_input) == "把球改蓝"
+    assert memory_gate._extract_user_text(wb_str) == "把球改蓝"
+    assert memory_gate._extract_user_text(codex) == "把球改蓝"
+    assert memory_gate._extract_user_text(assistant) == ""
+    assert memory_gate._extract_user_text(tool_result) == ""
