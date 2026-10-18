@@ -13,8 +13,6 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: linux-x64
-          - os: macos-13
-            arch: darwin-x64
           - os: macos-14
             arch: darwin-arm64
           - os: windows-latest

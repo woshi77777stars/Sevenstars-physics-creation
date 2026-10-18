@@ -70,6 +70,5 @@ make verify
 `make verify` prefers `work/.venv/bin/python` when present. `make
 dist-local` builds the current platform package and refuses to create a
 misleading `offline` zip when required wheels, ffmpeg or videos are missing.
-CI produces full offline packages for Linux, Intel macOS, Apple Silicon
-macOS and Windows, then publishes them to a GitHub Release when you push a
-`v*` tag.
+CI produces full offline packages for Linux, Apple Silicon macOS and Windows,
+then publishes them to a GitHub Release when you push a `v*` tag.

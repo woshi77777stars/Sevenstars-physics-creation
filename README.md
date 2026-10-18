@@ -107,7 +107,7 @@ back to `envs/default`); override with `PHYSICS_ANIM_PYTHON`.
 
 `make verify` runs the physics, memory, privacy and PPT tests, validates both
 manifests, and smoke-builds all decks. CI renders every scene and builds a
-full offline package for Linux, Intel macOS, Apple Silicon macOS and Windows.
+full offline package for Linux, Apple Silicon macOS and Windows.
 A local build refuses to create an `offline` package when wheels, ffmpeg or
 videos are missing; it can still emit an honest `ppt-only` or `renderer`
 package when those pieces are present.
